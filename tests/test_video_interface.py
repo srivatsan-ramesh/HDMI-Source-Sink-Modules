@@ -1,6 +1,7 @@
 from myhdl import Signal, Simulation, instance
-from clock_driver import clock_driver
-from video_interface import VideoInterface
+
+from hdmi.interfaces import VideoInterface
+from hdmi.utils import clock_driver
 
 
 def test_video_interface():
@@ -15,14 +16,24 @@ def test_video_interface():
     clock_drive = clock_driver(clock)
 
     video_interface = VideoInterface(clock, res)
-    video_interface.reset_cursor()
 
     @instance
     def test():
 
+        video_interface.reset_cursor()
+        video_interface.enable_video()
+
+        # Sending a frame
         yield video_interface.write_frame(frame)
+        yield video_interface.read_frame()
+        assert video_interface.get_frame() == frame
+
         # Frame can be updated here
         yield video_interface.write_frame(frame)
+        yield video_interface.read_frame()
+        assert video_interface.get_frame() == frame
+
+        video_interface.disable_video()
 
     return clock_drive, test
 
@@ -30,3 +41,5 @@ test_inst = test_video_interface()
 
 sim = Simulation(test_inst)
 sim.run(10000)
+sim.quit()
+
