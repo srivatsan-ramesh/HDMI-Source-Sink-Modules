@@ -35,14 +35,14 @@ class HDMIInterface:
          Write transactor for passing signals to external HDMI interface
         """
 
-        yield self.TMDS_CLK_P.posedge
-
         self.TMDS_R_P.next = TMDS_R
         self.TMDS_G_P.next = TMDS_G
         self.TMDS_B_P.next = TMDS_B
         self.TMDS_R_N.next = 0 if TMDS_R == 1 else 1
         self.TMDS_G_N.next = 0 if TMDS_G == 1 else 1
         self.TMDS_B_N.next = 0 if TMDS_B == 1 else 1
+
+        yield self.TMDS_CLK_P.posedge
 
         # can be uncommented to see output
         # print('Write :')

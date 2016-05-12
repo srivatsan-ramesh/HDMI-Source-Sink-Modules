@@ -21,8 +21,8 @@ def test_hdmi_interface():
         data = itertools.product([0, 1], repeat = 3)
 
         for TMDS_data in data:
-            yield hdmi_interface.write_data(*TMDS_data)
-            yield hdmi_interface.read_data()
+            yield hdmi_interface.write_data(*TMDS_data), \
+                  hdmi_interface.read_data()
             assert hdmi_interface.get_TMDS_data() == TMDS_data
 
     return clk_drive_p, clk_drive_n, test

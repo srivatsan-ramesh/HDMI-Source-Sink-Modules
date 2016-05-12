@@ -19,13 +19,13 @@ def test_aux_interface():
         aux_interface.enable_aux()
 
         # I have no idea as to what to pass as auxiliary data
-        yield aux_interface.write_aux(*aux_data)
-        yield aux_interface.read_aux()
+        yield aux_interface.write_aux(*aux_data), \
+              aux_interface.read_aux()
         assert aux_interface.get_aux_data() == aux_data
 
         # AUX data can be updated here
-        yield aux_interface.write_aux(*aux_data)
-        yield aux_interface.read_aux()
+        yield aux_interface.write_aux(*aux_data), \
+              aux_interface.read_aux()
         assert aux_interface.get_aux_data() == aux_data
 
         aux_interface.disable_aux()

@@ -24,13 +24,13 @@ def test_video_interface():
         video_interface.enable_video()
 
         # Sending a frame
-        yield video_interface.write_frame(frame)
-        yield video_interface.read_frame()
+        yield video_interface.write_frame(frame), \
+              video_interface.read_frame()
         assert video_interface.get_frame() == frame
 
         # Frame can be updated here
-        yield video_interface.write_frame(frame)
-        yield video_interface.read_frame()
+        yield video_interface.write_frame(frame), \
+              video_interface.read_frame()
         assert video_interface.get_frame() == frame
 
         video_interface.disable_video()

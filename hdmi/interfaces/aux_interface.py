@@ -27,14 +27,14 @@ class AuxInterface:
          Transactor for passing signals to audio interface
         """
 
+        self.aux0.next = aux0
+        self.aux1.next = aux1
+        self.aux2.next = aux2
+
         yield self.clock.posedge
 
         # uncomment to see output
         # print(aux0, aux1, aux2)
-
-        self.aux0.next = aux0
-        self.aux1.next = aux1
-        self.aux2.next = aux2
 
     def read_aux(self):
 

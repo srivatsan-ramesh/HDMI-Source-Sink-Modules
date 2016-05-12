@@ -39,7 +39,6 @@ class VideoInterface:
 
         self.frame = frame
         for pixel in frame:
-            yield self.clock.posedge
 
             self.red.next = pixel[0]
             self.green.next = pixel[1]
@@ -61,9 +60,12 @@ class VideoInterface:
             else:
                 self.vsync.next = 0
 
+            yield self.clock.posedge
+
     def read_frame(self):
 
         for pixel in self.frame:
+
             yield self.clock.posedge
 
     def get_frame(self):
