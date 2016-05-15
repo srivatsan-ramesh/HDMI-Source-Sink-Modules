@@ -6,13 +6,13 @@ from hdmi.utils import clock_driver
 
 def test_video_interface():
 
-    # resolution is kept low to minimize run time
+    # resolution of the video is kept low to reduce simulation time
     res = (50, 50)
 
-    # a sample frame
-    frame = [[1, 0, 0]]*(res[0] * res[1])
+    # a sample pixel
+    pixel = [1, 0, 0]
 
-    clock = Signal(0)
+    clock = Signal(bool(0))
     clock_drive = clock_driver(clock)
 
     video_interface = VideoInterface(clock, res)
@@ -23,15 +23,12 @@ def test_video_interface():
         video_interface.reset_cursor()
         video_interface.enable_video()
 
-        # Sending a frame
-        yield video_interface.write_frame(frame), \
-              video_interface.read_frame()
-        assert video_interface.get_frame() == frame
-
-        # Frame can be updated here
-        yield video_interface.write_frame(frame), \
-              video_interface.read_frame()
-        assert video_interface.get_frame() == frame
+        # iterating over the frame
+        for _ in range(res[0]*res[1]):
+            # Sending a pixel
+            yield video_interface.write_pixel(pixel), \
+                video_interface.read_pixel()
+            assert video_interface.get_pixel() == pixel
 
         video_interface.disable_video()
 

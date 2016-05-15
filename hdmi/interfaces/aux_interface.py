@@ -19,7 +19,7 @@ class AuxInterface:
         self.aux2 = Signal(intbv(0)[aux_depth[2]:])
 
         # Audio data enable
-        self.ade = Signal(0)
+        self.ade = Signal(bool(0))
 
     def write_aux(self, aux0, aux1, aux2):
 
@@ -46,8 +46,8 @@ class AuxInterface:
 
     def enable_aux(self):
 
-        self.ade = Signal(1)
+        self.ade = Signal(bool(1))
 
     def disable_aux(self):
 
-        self.ade = Signal(0)
+        self.ade = Signal(bool(0))
