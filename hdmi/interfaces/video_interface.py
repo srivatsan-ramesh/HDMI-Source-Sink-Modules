@@ -8,6 +8,17 @@ class VideoInterface:
         """
          This interface is the internal interface modeled after
          the xapp495 internal video interface
+
+         Args:
+             :param clock: pixel clock
+             :param resolution (optional): Resolution of the video to be transmitted or received.
+                                           Default value: (640, 480)
+             :param color_depth (optional): The bus width of each channel of the video
+                                            Default value: (8, 8, 8)
+
+         Usage:
+            video_interface = VideoInterface()
+
         """
 
         self.clock = clock
@@ -16,8 +27,8 @@ class VideoInterface:
         self.color_depth = color_depth
         self.pixel = [0, 0, 0]
 
-        self.hpixel = 0
-        self.vpixel = 0
+        self.hpixel = 0 # column number of the current pixel
+        self.vpixel = 0 # row number of the current pixel
 
         # RGB data from video source
         self.red = Signal(intbv(0)[color_depth[0]:])
@@ -35,7 +46,16 @@ class VideoInterface:
 
         """
          Write transactor for passing signals to video interface
+
+         Args:
+            :param pixel: The pixel value is a tuple (R, G, B)
+
+         Usage:
+            # Values passed should be non negative integers less than 2**color_depth[i]
+            video_interface.write_pixel(3, 4, 5)
+
         """
+
         self.pixel = pixel
         self.red.next = pixel[0]
         self.green.next = pixel[1]
@@ -65,16 +85,32 @@ class VideoInterface:
 
     def get_pixel(self):
 
+        """
+        :return: pixel attribute of the class
+        """
+
         return self.pixel
 
     def reset_cursor(self):
+
+        """
+        Resets the horizontal and vertical counters to 0.
+        """
 
         self.hpixel, self.vpixel = 0, 0
 
     def enable_video(self):
 
+        """
+        Makes the VDE signal 1
+        """
+
         self.vde = Signal(bool(1))
 
     def disable_video(self):
+
+        """
+        Makes the VDE signal 0
+        """
 
         self.vde = Signal(bool(0))

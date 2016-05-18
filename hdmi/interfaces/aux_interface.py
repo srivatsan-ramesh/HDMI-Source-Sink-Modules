@@ -8,6 +8,15 @@ class AuxInterface:
         """
          This interface is the internal interface modeled after
          the xapp495 internal audio interface
+
+         Args:
+             :param clock: pixel clock.
+             :param aux_depth (optional): The bus width of the aux interface
+                                          Default value: (4, 4, 4)
+
+        Usage:
+            aux_interface = AuxInterface()
+
         """
 
         self.clock = clock
@@ -25,6 +34,16 @@ class AuxInterface:
 
         """
          Transactor for passing signals to audio interface
+
+         Args:
+             :param aux2: The auxiliary data(usually audio data)
+             :param aux1: The auxiliary data(usually audio data)
+             :param aux0: The auxiliary data(usually audio data)
+
+         Usage:
+            # Values passed should be non negative integers less than 2**aux_depth[i]
+            yield aux_interface.write_aux(2, 2, 2)
+
         """
 
         self.aux0.next = aux0
@@ -42,12 +61,24 @@ class AuxInterface:
 
     def get_aux_data(self):
 
+        """
+        :return: A tuple of aux signal values
+        """
+
         return self.aux0, self.aux1, self.aux2
 
     def enable_aux(self):
 
+        """
+        Makes the ADE signal 1
+        """
+
         self.ade = Signal(bool(1))
 
     def disable_aux(self):
+
+        """
+        Makes the ADE signal 0
+        """
 
         self.ade = Signal(bool(0))

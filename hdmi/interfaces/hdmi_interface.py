@@ -6,8 +6,15 @@ class HDMIInterface:
     def __init__(self, clock):
 
         """
-         This interface is the internal interface modeled after
+         This interface is the external interface modeled after
          the xapp495 external HDMI interface
+
+         Args:
+            :param clock: A reference clock used to transmit signals, It is usually 10 times the pixel clock
+
+         Usage:
+            hdmi_interface = HDMIInterface()
+
         """
 
         self.clock = clock
@@ -27,6 +34,10 @@ class HDMIInterface:
 
     def _print_data(self):
 
+        """
+        An utility function that prints the current signal values
+        """
+
         print('R+ : {} , R- : {}'.format(self.TMDS_R_P, self.TMDS_R_N))
         print('G+ : {} , G- : {}'.format(self.TMDS_G_P, self.TMDS_G_N))
         print('B+ : {} , B- : {}'.format(self.TMDS_B_P, self.TMDS_B_N))
@@ -36,6 +47,17 @@ class HDMIInterface:
 
         """
          Write transactor for passing signals to external HDMI interface
+
+         Args:
+             :param TMDS_R: Serialized TMDS encoded video data
+             :param TMDS_G: Serialized TMDS encoded video data
+             :param TMDS_B: Serialized TMDS encoded video data
+             :param TMDS_CLK: Clock used by the sink to recover data
+
+         Usage:
+            # The values passed should be 1(or True) or 0(or False).
+            yield hdmi_interface.write_data(0, 0, 0, 0)
+
         """
 
         self.TMDS_R_P.next = TMDS_R
