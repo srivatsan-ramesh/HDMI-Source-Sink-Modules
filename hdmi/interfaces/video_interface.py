@@ -105,7 +105,8 @@ class VideoInterface:
         Makes the VDE signal 1
         """
 
-        self.vde = Signal(bool(1))
+        self.vde.next = 1
+        yield self.clock.posedge
 
     def disable_video(self):
 
@@ -113,4 +114,5 @@ class VideoInterface:
         Makes the VDE signal 0
         """
 
-        self.vde = Signal(bool(0))
+        self.vde.next = 0
+        yield self.clock.posedge

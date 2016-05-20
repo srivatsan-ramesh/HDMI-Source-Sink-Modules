@@ -73,7 +73,8 @@ class AuxInterface:
         Makes the ADE signal 1
         """
 
-        self.ade = Signal(bool(1))
+        self.ade.next = 1
+        yield self.clock.posedge
 
     def disable_aux(self):
 
@@ -81,4 +82,5 @@ class AuxInterface:
         Makes the ADE signal 0
         """
 
-        self.ade = Signal(bool(0))
+        self.ade.next = 0
+        yield self.clock.posedge
