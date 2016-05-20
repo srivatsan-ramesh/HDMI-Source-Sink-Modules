@@ -3,21 +3,23 @@ from myhdl import Signal
 
 class HDMIInterface:
 
-    def __init__(self, clock):
+    def __init__(self, clock5x, clock5x_not):
 
         """
          This interface is the external interface modeled after
          the xapp495 external HDMI interface
 
          Args:
-            :param clock: A reference clock used to transmit signals, It is usually 10 times the pixel clock
+            :param clock5x: A reference clock 5 times the pixel clock
+            :param clock5x_not: A reference clock 5 times the pixel clock
 
          Usage:
             hdmi_interface = HDMIInterface()
 
         """
 
-        self.clock = clock
+        self.clock5x = clock5x
+        self.clock5x_not = clock5x_not
 
         # Differential TMDS output/input signals
         self.TMDS_R_P = Signal(bool(0))
@@ -69,7 +71,7 @@ class HDMIInterface:
         self.TMDS_B_N.next = 0 if TMDS_B == 1 else 1
         self.TMDS_CLK_N.next = 0 if TMDS_CLK == 1 else 1
 
-        yield self.clock.posedge
+        yield self.clock5x.posedge, self.clock5x_not.posedge
 
         # can be uncommented to see output
         # print('Write :')
@@ -77,7 +79,7 @@ class HDMIInterface:
 
     def read_data(self):
 
-        yield self.clock.posedge
+        yield self.clock5x.posedge, self.clock5x_not.posedge
 
         # can be uncommented to see output
         # print('Read :')
