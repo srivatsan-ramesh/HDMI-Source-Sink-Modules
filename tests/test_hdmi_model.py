@@ -19,7 +19,7 @@ def test_tmds_codec():
     clock = Signal(bool(0))
     reset = ResetSignal(0, True, False)
 
-    hdmi_tx_model = HDMITxModel(clock, reset)
+    hdmi_tx_model = HDMITxModel(clock, reset) # incomplete
     hdmi_rx_model = HDMIRxModel(clock, reset)
     clk = clock_driver(clock)
     video_data = int('10101010', 2)
