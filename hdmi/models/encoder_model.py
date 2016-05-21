@@ -1,6 +1,6 @@
 import math
 
-from myhdl import always, Signal, intbv, ConcatSignal, always_seq, instances, ResetSignal
+from myhdl import always, Signal, intbv, ConcatSignal, always_seq, ResetSignal
 
 
 class EncoderModel:
@@ -154,7 +154,7 @@ class EncoderModel:
 
         @always(____ade, self.ade, __ade, no_of_ones_video_in, _video_in, count, no_of_ones_q_m, no_of_zeros_q_m, q_m,
                 digb_period, __c1, __c0, __audio_in, decision1)
-        def continuous_assignment_block_1():
+        def continuous_assignment():
 
             digb_period.next = (not __ade) and (____ade or self.ade)
 
@@ -180,7 +180,6 @@ class EncoderModel:
             q_m.next[0] = _video_in[0]
             temp = _video_in[0]
             for i in range(1, self.color_depth):
-                print(temp, not _video_in[i] if decision1 else _video_in[i])
                 temp = (temp ^ (not _video_in[i] if decision1 else _video_in[i]))
                 q_m.next[i] = 1 if temp else 0
             q_m.next[self.color_depth] = 0 if decision1 else 1
@@ -236,4 +235,4 @@ class EncoderModel:
 
                 count.next = 0
 
-        return instances()
+        return sequential_logic, continuous_assignment, output_logic

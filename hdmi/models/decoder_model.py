@@ -10,8 +10,11 @@ class DecoderModel:
                  data_island_preamble=Signal(bool(0)),
                  c0=Signal(bool(0)),
                  c1=Signal(bool(0)),
-                 channel='BLUE'
-                 ):
+                 vde=Signal(bool(0)),
+                 ade=Signal(bool(0)),
+                 video_out=Signal(intbv(0)[8:0]),
+                 audio_out=Signal(intbv(0)[4:0]),
+                 channel='BLUE'):
 
         self.clock = clock
         self.data_in = data_in
@@ -19,10 +22,10 @@ class DecoderModel:
         self.data_island_preamble = data_island_preamble
         self.c0 = c0
         self.c1 = c1
-        self.vde = Signal(bool(0)),
-        self.ade = Signal(bool(0)),
-        self.video_out = Signal(intbv(0)[8:0])
-        self.audio_out = Signal(intbv(0)[4:0])
+        self.vde = vde
+        self.ade = ade
+        self.video_out = video_out
+        self.audio_out = audio_out
         self.channel = channel
 
     def get_video_data(self):
@@ -193,4 +196,4 @@ class DecoderModel:
                         self.ade.next = 0
                         self.vde.next = 0
 
-        return instances()
+        return continuous_assignment, sequential_logic
