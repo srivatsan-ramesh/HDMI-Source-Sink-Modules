@@ -1,4 +1,4 @@
-from myhdl import Signal, always, always_comb, intbv, instance, traceSignals
+from myhdl import Signal, always, always_comb, intbv, instance, traceSignals, block
 
 from hdmi.models import EncoderModel
 
@@ -14,6 +14,7 @@ class HDMITxModel:
         self.aux_interface = aux_interface
         self.hdmi_interface = hdmi_interface
 
+    @block
     def process(self):
 
         data_island_preamble = (1, 0, 1, 0)
@@ -42,6 +43,13 @@ class HDMITxModel:
 
         red_encoder = EncoderModel(self.clock, self.reset, _red[9], _aux2[9],
                                    vde=_vde[9], ade=_ade[9], channel='RED')
+
+        blue_encoder_inst = blue_encoder.process()
+        blue_encoder_inst.name = 'blue_encoder'
+        green_encoder_inst = green_encoder.process()
+        green_encoder_inst.name = 'green_encoder'
+        red_encoder_inst = red_encoder.process()
+        red_encoder_inst.name = 'red_encoder'
 
         @always(self.clock.posedge)
         def serial_delay():
@@ -93,4 +101,4 @@ class HDMITxModel:
                                                          self.clock)
 
         return serial_delay, serialize, \
-            blue_encoder.process(), green_encoder.process(), red_encoder.process()
+            blue_encoder_inst, green_encoder_inst, red_encoder_inst

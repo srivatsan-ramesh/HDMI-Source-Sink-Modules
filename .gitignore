@@ -12,3 +12,5 @@ pip-delete-this-directory.txt
 .idea
 
 *.egg-info
+
+*.vcd

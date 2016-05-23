@@ -1,4 +1,4 @@
-from myhdl import Signal, always_comb, intbv, always, ConcatSignal, instance, traceSignals
+from myhdl import Signal, always_comb, intbv, always, ConcatSignal, instance, traceSignals, block
 
 from hdmi.models import DecoderModel
 
@@ -10,6 +10,7 @@ class HDMIRxModel:
         self.aux_interface = aux_interface
         self.hdmi_interface = hdmi_interface
 
+    @block
     def process(self):
         red = Signal(intbv(0)[10:0])
         green = Signal(intbv(0)[10:0])
@@ -27,6 +28,13 @@ class HDMIRxModel:
         blue_decoder = DecoderModel(self.hdmi_interface.TMDS_CLK_P, blue, video_preamble, data_island_preamble,
                                     video_out=self.video_interface.blue,
                                     audio_out=self.aux_interface.aux0, channel='BLUE')
+
+        red_decoder_inst = red_decoder.process()
+        red_decoder_inst.name = 'red_decoder'
+        green_decoder_inst = green_decoder.process()
+        green_decoder_inst.name = 'green_decoder'
+        blue_decoder_inst = blue_decoder.process()
+        blue_decoder_inst.name = 'blue_decoder'
 
         @always_comb
         def continuous_assignment():
@@ -58,4 +66,4 @@ class HDMIRxModel:
                 blue_decoder.data_in.next = int(''.join(blue_list[::-1]), 2)
 
         return continuous_assignment, sequential, deserialize, \
-            red_decoder.process(), green_decoder.process(), blue_decoder.process()
+            red_decoder_inst, green_decoder_inst, blue_decoder_inst

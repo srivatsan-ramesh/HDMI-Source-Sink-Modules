@@ -1,21 +1,21 @@
 import math
 
-from myhdl import always, Signal, intbv, ConcatSignal, always_seq, ResetSignal
+from myhdl import always, Signal, intbv, ConcatSignal, always_seq, ResetSignal, instances, block
 
 
 class EncoderModel:
 
     def __init__(self,
-                 clock = Signal(bool(0)),
-                 reset = ResetSignal(0, True, False),
-                 video_in = Signal(intbv(0)[8:0]),
-                 audio_in = Signal(intbv(0)[4:0]),
-                 c0 = Signal(bool(0)),
-                 c1 = Signal(bool(0)),
-                 vde = Signal(bool(0)),
-                 ade = Signal(bool(0)),
-                 data_out = Signal(intbv(0)[10:0]),
-                 channel = 'BLUE'):
+                 clock=Signal(bool(0)),
+                 reset=ResetSignal(0, True, False),
+                 video_in=Signal(intbv(0)[8:0]),
+                 audio_in=Signal(intbv(0)[4:0]),
+                 c0=Signal(bool(0)),
+                 c1=Signal(bool(0)),
+                 vde=Signal(bool(0)),
+                 ade=Signal(bool(0)),
+                 data_out=Signal(intbv(0)[10:0]),
+                 channel='BLUE'):
         """
          A non convertible model to simulate the behaviour of
          a TMDS and TERC4 encoder.
@@ -65,6 +65,7 @@ class EncoderModel:
 
         pass
 
+    @block
     def process(self):
 
         """
@@ -235,4 +236,4 @@ class EncoderModel:
 
                 count.next = 0
 
-        return sequential_logic, continuous_assignment, output_logic
+        return instances()

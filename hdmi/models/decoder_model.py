@@ -1,4 +1,4 @@
-from myhdl import Signal, intbv, always, always_comb, instances
+from myhdl import Signal, intbv, always, always_comb, instances, block
 
 
 class DecoderModel:
@@ -37,6 +37,7 @@ class DecoderModel:
     def read(self):
         yield self.clock.posedge
 
+    @block
     def process(self):
 
         control_token = ['1101010100',  # 00
@@ -196,4 +197,4 @@ class DecoderModel:
                         self.ade.next = 0
                         self.vde.next = 0
 
-        return continuous_assignment, sequential_logic
+        return instances()
