@@ -1,6 +1,6 @@
 import math
 
-from myhdl import always, Signal, intbv, ConcatSignal, always_seq, ResetSignal, instances, block
+from myhdl import always, Signal, intbv, ConcatSignal, always_seq, ResetSignal, instances, block, now
 
 
 class EncoderModel:
@@ -101,8 +101,8 @@ class EncoderModel:
         q_m = Signal(intbv(0, min=self.video_in.min,
                            max=self.video_in.max * 2))
 
-        no_of_ones_q_m = Signal(intbv(0)[math.log(self.color_depth, 2):])
-        no_of_zeros_q_m = Signal(intbv(0)[math.log(self.color_depth, 2):])
+        no_of_ones_q_m = Signal(intbv(0)[math.log(self.color_depth, 2)+1:])
+        no_of_zeros_q_m = Signal(intbv(0)[math.log(self.color_depth, 2)+1:])
 
         count = Signal(intbv(0)[5:0])
 
@@ -133,7 +133,7 @@ class EncoderModel:
             no_of_ones_video_in.next = bin(self.video_in).count("1")
             _video_in.next = self.video_in
             no_of_ones_q_m.next = bin(q_m).count("1")
-            no_of_zeros_q_m.next = bin(q_m).count("1")
+            no_of_zeros_q_m.next = 8 - bin(q_m).count("1")
 
             _vde.next = self.vde
             __vde.next = _vde
@@ -235,5 +235,7 @@ class EncoderModel:
                     self.data_out.next = int(control_token[concat_c], 2)
 
                 count.next = 0
+            if now()>=2290 and self.channel == 'BLUE':
+                print(now(), self.data_out, self.data_out.next)
 
         return instances()

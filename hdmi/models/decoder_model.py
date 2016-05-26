@@ -37,13 +37,18 @@ class DecoderModel:
     def read(self):
         yield self.clock.posedge
 
+    def write_data(self, data_in):
+        self.data_in.next = data_in
+        yield self.clock.posedge
+
+
     @block
     def process(self):
 
-        control_token = ['1101010100',  # 00
-                         '0010101011',  # 01
-                         '0101010100',  # 10
-                         '1010101011']  # 11
+        control_token = [int('1101010100', 2),  # 00
+                         int('0010101011', 2),  # 01
+                         int('0101010100', 2),  # 10
+                         int('1010101011', 2)]  # 11
 
         control, _control, control_end = [Signal(bool(0)) for _ in range(3)]
 

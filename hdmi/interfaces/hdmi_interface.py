@@ -1,4 +1,4 @@
-from myhdl import Signal
+from myhdl import Signal, now
 
 
 class HDMIInterface:
@@ -43,7 +43,7 @@ class HDMIInterface:
         print('R+ : {} , R- : {}'.format(self.TMDS_R_P, self.TMDS_R_N))
         print('G+ : {} , G- : {}'.format(self.TMDS_G_P, self.TMDS_G_N))
         print('B+ : {} , B- : {}'.format(self.TMDS_B_P, self.TMDS_B_N))
-        print('B+ : {} , B- : {}'.format(self.TMDS_CLK_P, self.TMDS_CLK_N))
+        print('CLK+ : {} , CLK- : {}'.format(self.TMDS_CLK_P, self.TMDS_CLK_N))
 
     def write_data(self, TMDS_R, TMDS_G, TMDS_B, TMDS_CLK):
 
@@ -66,11 +66,10 @@ class HDMIInterface:
         self.TMDS_G_P.next = TMDS_G
         self.TMDS_B_P.next = TMDS_B
         self.TMDS_CLK_P.next = TMDS_CLK
-        self.TMDS_R_N.next = 0 if TMDS_R == 1 else 1
-        self.TMDS_G_N.next = 0 if TMDS_G == 1 else 1
-        self.TMDS_B_N.next = 0 if TMDS_B == 1 else 1
-        self.TMDS_CLK_N.next = 0 if TMDS_CLK == 1 else 1
-
+        self.TMDS_R_N.next = False if TMDS_R == 1 else True
+        self.TMDS_G_N.next = False if TMDS_G == 1 else True
+        self.TMDS_B_N.next = False if TMDS_B == 1 else True
+        self.TMDS_CLK_N.next = False if TMDS_CLK == 1 else True
         yield self.clock5x.posedge, self.clock5x_not.posedge
 
         # can be uncommented to see output

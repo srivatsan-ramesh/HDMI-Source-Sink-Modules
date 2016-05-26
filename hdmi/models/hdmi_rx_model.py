@@ -1,4 +1,4 @@
-from myhdl import Signal, always_comb, intbv, always, ConcatSignal, instance, traceSignals, block
+from myhdl import Signal, always_comb, intbv, always, ConcatSignal, instance, block, now
 
 from hdmi.models import DecoderModel
 
@@ -49,21 +49,29 @@ class HDMIRxModel:
             video_preamble.next = 1 if control == int('1000', 2) else 0
             data_island_preamble.next = 1 if control == int('1010', 2) else 0
 
+        red_list = ['0' for _ in range(10)]
+        green_list = ['0' for _ in range(10)]
+        blue_list = ['0' for _ in range(10)]
+
         @instance
         def deserialize():
             while True:
-                red_list = []
-                green_list = []
-                blue_list = []
-                for _ in range(10):
-                    yield self.hdmi_interface.read_data()
-                    data = self.hdmi_interface.get_TMDS_data()
-                    red_list.append('1' if data[0] else '0')
-                    green_list.append('1' if data[1] else '0')
-                    blue_list.append('1' if data[2] else '0')
-                red_decoder.data_in.next = int(''.join(red_list[::-1]), 2)
-                green_decoder.data_in.next = int(''.join(green_list[::-1]), 2)
-                blue_decoder.data_in.next = int(''.join(blue_list[::-1]), 2)
+                data = self.hdmi_interface.get_TMDS_data()
+                yield self.hdmi_interface.read_data()
+                # print('rx : ', self.hdmi_interface.get_TMDS_data(), now())
+                red_list.append('1' if data[0] else '0')
+                green_list.append('1' if data[1] else '0')
+                blue_list.append('1' if data[2] else '0')
+                red_list.pop(0)
+                green_list.pop(0)
+                blue_list.pop(0)
 
-        return continuous_assignment, sequential, deserialize, \
+        @instance
+        def assign():
+            while True:
+                yield red_decoder.write_data(int(''.join(red_list[::-1]), 2)), \
+                      green_decoder.write_data(int(''.join(green_list[::-1]), 2)), \
+                      blue_decoder.write_data(int(''.join(blue_list[::-1]), 2))
+
+        return continuous_assignment, sequential, assign, deserialize, \
             red_decoder_inst, green_decoder_inst, blue_decoder_inst

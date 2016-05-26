@@ -23,9 +23,9 @@ def test_hdmi_model():
                                 video_interface_tx, aux_interface_tx, hdmi_interface_tx)
     hdmi_rx_model = HDMIRxModel(video_interface_rx, aux_interface_rx, hdmi_interface_rx)
 
-    clk = clock_driver(clock, 5)
-    clk_5x = clock_driver(clock5x)
-    clk_5x_not = clock_driver(clock5x_not)
+    clk = clock_driver(clock, 10)
+    clk_5x = clock_driver(clock5x, 2)
+    clk_5x_not = clock_driver(clock5x_not, 2)
 
     video_data = [int('10101010', 2)]*3
     aux_data = (10, 15, 10)
@@ -53,5 +53,5 @@ def test_hdmi_model():
     return clk, clk_5x, clk_5x_not, hdmi_tx_inst, hdmi_rx_inst, test
 
 t = test_hdmi_model()
-t.config_sim(trace=True)
+t.config_sim(trace=False)
 t.run_sim(10000)

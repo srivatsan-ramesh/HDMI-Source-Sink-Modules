@@ -1,4 +1,4 @@
-from myhdl import Signal, always, always_comb, intbv, instance, traceSignals, block
+from myhdl import Signal, always, always_comb, intbv, instance, traceSignals, block, now, delay
 
 from hdmi.models import EncoderModel
 
@@ -69,19 +69,19 @@ class HDMITxModel:
             _vsync[0].next = self.video_interface.vsync
 
             for i in range(1, 10):
-                _red[i].next = _red[i-1]
-                _green[i].next = _green[i-1]
-                _blue[i].next = _blue[i-1]
+                _red[i].next = _red[i - 1]
+                _green[i].next = _green[i - 1]
+                _blue[i].next = _blue[i - 1]
 
-                _aux0[i].next = _aux0[i-1]
-                _aux1[i].next = _aux1[i-1]
-                _aux2[i].next = _aux2[i-1]
+                _aux0[i].next = _aux0[i - 1]
+                _aux1[i].next = _aux1[i - 1]
+                _aux2[i].next = _aux2[i - 1]
 
-                _vde[i].next = _vde[i-1]
-                _ade[i].next = _ade[i-1]
+                _vde[i].next = _vde[i - 1]
+                _ade[i].next = _ade[i - 1]
 
-                _hsync[i].next = _hsync[i-1]
-                _vsync[i].next = _vsync[i-1]
+                _hsync[i].next = _hsync[i - 1]
+                _vsync[i].next = _vsync[i - 1]
 
             if self.video_interface.vde:
                 green_encoder.c0.next, green_encoder.c1.next, red_encoder.c0.next, red_encoder.c1.next = video_preamble
@@ -93,7 +93,9 @@ class HDMITxModel:
 
         @instance
         def serialize():
+            yield self.clock.posedge
             while True:
+                yield delay(1)
                 for i in range(10):
                     yield self.hdmi_interface.write_data(red_encoder.data_out[i],
                                                          green_encoder.data_out[i],
