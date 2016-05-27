@@ -19,15 +19,20 @@ class HDMIRxModel:
         video_preamble = Signal(bool(0))
         data_island_preamble = Signal(bool(0))
 
+        r_c0, g_c0, b_c0 = [Signal(bool(0)) for _ in range(3)]
+        r_c1, g_c1, b_c1 = [Signal(bool(0)) for _ in range(3)]
+        r_vde, g_vde, b_vde = [Signal(bool(0)) for _ in range(3)]
+        r_ade, g_ade, b_ade = [Signal(bool(0)) for _ in range(3)]
+
         red_decoder = DecoderModel(self.hdmi_interface.TMDS_CLK_P, red, video_preamble, data_island_preamble,
-                                   video_out=self.video_interface.red,
-                                   audio_out=self.aux_interface.aux2, channel='RED')
+                                   r_c0, r_c1, r_vde, r_ade,
+                                   self.video_interface.red, self.aux_interface.aux2, channel='RED')
         green_decoder = DecoderModel(self.hdmi_interface.TMDS_CLK_P, green, video_preamble, data_island_preamble,
-                                     video_out=self.video_interface.green,
-                                     audio_out=self.aux_interface.aux1, channel='GREEN')
+                                     g_c0, g_c1, g_vde, g_ade,
+                                     self.video_interface.green, self.aux_interface.aux1, channel='GREEN')
         blue_decoder = DecoderModel(self.hdmi_interface.TMDS_CLK_P, blue, video_preamble, data_island_preamble,
-                                    video_out=self.video_interface.blue,
-                                    audio_out=self.aux_interface.aux0, channel='BLUE')
+                                    b_c0, b_c1, b_vde, b_ade,
+                                    self.video_interface.blue, self.aux_interface.aux0, channel='BLUE')
 
         red_decoder_inst = red_decoder.process()
         red_decoder_inst.name = 'red_decoder'
@@ -38,14 +43,14 @@ class HDMIRxModel:
 
         @always_comb
         def continuous_assignment():
-            self.video_interface.vde.next = red_decoder.vde
-            self.aux_interface.ade.next = red_decoder.ade
-            self.video_interface.hsync.next = self.aux_interface.aux0[0] if blue_decoder.ade else blue_decoder.c0
-            self.video_interface.vsync.next = self.aux_interface.aux0[1] if blue_decoder.ade else blue_decoder.c1
+            self.video_interface.vde.next = r_vde
+            self.aux_interface.ade.next = r_ade
+            self.video_interface.hsync.next = self.aux_interface.aux0[0] if b_ade else b_c0
+            self.video_interface.vsync.next = self.aux_interface.aux0[1] if b_ade else b_c1
 
         @always(self.hdmi_interface.TMDS_CLK_P.posedge)
         def sequential():
-            control = ConcatSignal(green_decoder.c0, green_decoder.c1, red_decoder.c0, red_decoder.c1)
+            control = ConcatSignal(g_c0, g_c1, r_c0, r_c1)
             video_preamble.next = 1 if control == int('1000', 2) else 0
             data_island_preamble.next = 1 if control == int('1010', 2) else 0
 

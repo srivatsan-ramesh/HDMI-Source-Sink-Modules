@@ -3,18 +3,8 @@ from myhdl import Signal, intbv, always, always_comb, instances, block
 
 class DecoderModel:
 
-    def __init__(self,
-                 clock=Signal(bool(0)),
-                 data_in=Signal(intbv(0)[10:0]),
-                 video_preamble=Signal(bool(0)),
-                 data_island_preamble=Signal(bool(0)),
-                 c0=Signal(bool(0)),
-                 c1=Signal(bool(0)),
-                 vde=Signal(bool(0)),
-                 ade=Signal(bool(0)),
-                 video_out=Signal(intbv(0)[8:0]),
-                 audio_out=Signal(intbv(0)[4:0]),
-                 channel='BLUE'):
+    def __init__(self, clock, data_in, video_preamble, data_island_preamble, c0,
+                 c1, vde, ade, video_out, audio_out, channel='BLUE'):
 
         self.clock = clock
         self.data_in = data_in

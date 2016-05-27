@@ -53,5 +53,5 @@ def test_hdmi_model():
     return clk, clk_5x, clk_5x_not, hdmi_tx_inst, hdmi_rx_inst, test
 
 t = test_hdmi_model()
-t.config_sim(trace=False)
+t.config_sim(trace=True)
 t.run_sim(10000)

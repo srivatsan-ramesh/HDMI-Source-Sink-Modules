@@ -21,11 +21,17 @@ class HDMITxModel:
         video_preamble = (1, 0, 0, 0)
         null_control = (0, 0, 0, 0)
 
+        red_data_out = Signal(intbv(0)[10:0])
+        green_data_out = Signal(intbv(0)[10:0])
+        blue_data_out = Signal(intbv(0)[10:0])
+
         _vde = [Signal(bool(0)) for _ in range(10)]
         _ade = [Signal(bool(0)) for _ in range(10)]
 
         _hsync = [Signal(bool(0)) for _ in range(10)]
         _vsync = [Signal(bool(0)) for _ in range(10)]
+
+        g_c0, r_c0, g_c1, r_c1 = [Signal(bool(0)) for _ in range(4)]
 
         _red = [Signal(intbv(0)[self.video_interface.color_depth[0]:]) for _ in range(10)]
         _green = [Signal(intbv(0)[self.video_interface.color_depth[1]:]) for _ in range(10)]
@@ -36,13 +42,13 @@ class HDMITxModel:
         _aux2 = [Signal(intbv(0)[self.aux_interface.aux_depth[2]:]) for _ in range(10)]
 
         blue_encoder = EncoderModel(self.clock, self.reset, _blue[9], _aux0[9],
-                                    vde=_vde[9], ade=_ade[9], c0=_hsync[9], c1=_vsync[9], channel='BLUE')
+                                    _hsync[9], _vsync[9], _vde[9], _ade[9], blue_data_out, channel='BLUE')
 
-        green_encoder = EncoderModel(self.clock, self.reset, _green[9], _aux1[9],
-                                     vde=_vde[9], ade=_ade[9], channel='GREEN')
+        green_encoder = EncoderModel( self.clock, self.reset, _green[9], _aux1[9],
+                                     g_c0, g_c1, _vde[9], _ade[9], green_data_out, channel='GREEN')
 
         red_encoder = EncoderModel(self.clock, self.reset, _red[9], _aux2[9],
-                                   vde=_vde[9], ade=_ade[9], channel='RED')
+                                   r_c0, r_c1, _vde[9], _ade[9], red_data_out, channel='RED')
 
         blue_encoder_inst = blue_encoder.process()
         blue_encoder_inst.name = 'blue_encoder'
@@ -84,12 +90,12 @@ class HDMITxModel:
                 _vsync[i].next = _vsync[i - 1]
 
             if self.video_interface.vde:
-                green_encoder.c0.next, green_encoder.c1.next, red_encoder.c0.next, red_encoder.c1.next = video_preamble
+                g_c0.next, g_c1.next, r_c0.next, r_c1.next = video_preamble
             elif self.aux_interface.ade:
-                green_encoder.c0.next, green_encoder.c1.next, red_encoder.c0.next, red_encoder.c1.next = \
+                g_c0.next, g_c1.next, r_c0.next, r_c1.next = \
                     data_island_preamble
             else:
-                green_encoder.c0.next, green_encoder.c1.next, red_encoder.c0.next, red_encoder.c1.next = null_control
+                g_c0.next, g_c1.next, r_c0.next, r_c1.next = null_control
 
         @instance
         def serialize():
@@ -97,9 +103,9 @@ class HDMITxModel:
             while True:
                 yield delay(1)
                 for i in range(10):
-                    yield self.hdmi_interface.write_data(red_encoder.data_out[i],
-                                                         green_encoder.data_out[i],
-                                                         blue_encoder.data_out[i],
+                    yield self.hdmi_interface.write_data(red_data_out[i],
+                                                         green_data_out[i],
+                                                         blue_data_out[i],
                                                          self.clock)
 
         return serial_delay, serialize, \
