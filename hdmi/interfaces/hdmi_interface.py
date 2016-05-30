@@ -1,4 +1,4 @@
-from myhdl import Signal, now
+from myhdl import Signal
 
 
 class HDMIInterface:

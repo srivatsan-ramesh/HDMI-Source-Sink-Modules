@@ -1,4 +1,4 @@
-from myhdl import Signal, always, always_comb, intbv, instance, traceSignals, block, now, delay
+from myhdl import Signal, always, intbv, instance, block, delay
 
 from hdmi.models import EncoderModel
 

@@ -1,4 +1,4 @@
-from myhdl import instance, Signal, ResetSignal, traceSignals, instances, block, delay, StopSimulation, now
+from myhdl import instance, Signal, ResetSignal, block, delay, StopSimulation
 
 from hdmi.interfaces import VideoInterface, AuxInterface, HDMIInterface
 from hdmi.models import HDMITxModel, HDMIRxModel

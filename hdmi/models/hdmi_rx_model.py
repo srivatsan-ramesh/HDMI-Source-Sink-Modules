@@ -1,4 +1,4 @@
-from myhdl import Signal, always_comb, intbv, always, ConcatSignal, instance, block, now
+from myhdl import Signal, always_comb, intbv, always, ConcatSignal, instance, block
 
 from hdmi.models import DecoderModel
 
