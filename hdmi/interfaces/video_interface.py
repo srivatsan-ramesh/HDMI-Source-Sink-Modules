@@ -86,10 +86,10 @@ class VideoInterface:
     def get_pixel(self):
 
         """
-        :return: pixel attribute of the class
+        :return: pixel values R, G, B
         """
 
-        return self.pixel
+        return [self.red.val[:], self.green.val[:], self.blue.val[:]]
 
     def reset_cursor(self):
 
@@ -116,3 +116,11 @@ class VideoInterface:
 
         self.vde.next = 0
         yield self.clock.posedge
+
+    def get_vde(self):
+
+        """
+        :return: returns the VDE signal
+        """
+
+        return self.vde.val

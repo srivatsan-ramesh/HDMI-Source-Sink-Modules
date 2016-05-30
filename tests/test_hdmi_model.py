@@ -1,4 +1,4 @@
-from myhdl import instance, Signal, ResetSignal, traceSignals, instances, block
+from myhdl import instance, Signal, ResetSignal, traceSignals, instances, block, delay, StopSimulation, now
 
 from hdmi.interfaces import VideoInterface, AuxInterface, HDMIInterface
 from hdmi.models import HDMITxModel, HDMIRxModel
@@ -34,24 +34,64 @@ def test_hdmi_model():
     hdmi_rx_inst = hdmi_rx_model.process()
     hdmi_rx_inst.name = 'rx_process'
 
+    input_signals = []
+
+    def append_signals():
+
+        input_signals.append([video_interface_tx.get_pixel(),
+                              aux_interface_tx.get_aux_data()[1:], # Ignoring the data from aux0
+                              video_interface_tx.get_vde(),
+                              aux_interface_tx.get_ade()])
+
+    def get_signals():
+
+        return [video_interface_rx.get_pixel(),
+                aux_interface_rx.get_aux_data()[1:],  # Ignoring the data from aux0
+                video_interface_rx.get_vde(),
+                aux_interface_rx.get_ade()]
+
+    @instance
+    def assert_io():
+
+        for _ in range(16):
+            yield clock.posedge
+        while True:
+            yield delay(1)
+            output_signal = get_signals()
+            input_signal = input_signals.pop(0)
+            assert input_signal == output_signal
+            if len(input_signals) == 0:
+                raise StopSimulation
+            yield clock.posedge
+
     @instance
     def test():
+
         yield video_interface_tx.disable_video(), aux_interface_tx.disable_aux()
+        append_signals()
         yield video_interface_tx.enable_video(), video_interface_tx.write_pixel(video_data)
+        append_signals()
         for _ in range(100):
             yield video_interface_tx.write_pixel(video_data)
+            append_signals()
         yield video_interface_tx.disable_video()
+        append_signals()
         for _ in range(10):
             yield clock.posedge
+            append_signals()
         yield aux_interface_tx.enable_aux(), aux_interface_tx.write_aux(*aux_data)
+        append_signals()
         for _ in range(20):
             yield aux_interface_tx.write_aux(*aux_data)
+            append_signals()
         yield aux_interface_tx.disable_aux()
+        append_signals()
         for _ in range(10):
             yield clock.posedge
+            append_signals()
 
-    return clk, clk_5x, clk_5x_not, hdmi_tx_inst, hdmi_rx_inst, test
+    return clk, clk_5x, clk_5x_not, hdmi_tx_inst, hdmi_rx_inst, test, assert_io
 
 t = test_hdmi_model()
-t.config_sim(trace=True)
-t.run_sim(10000)
+t.config_sim(trace=False)
+t.run_sim()

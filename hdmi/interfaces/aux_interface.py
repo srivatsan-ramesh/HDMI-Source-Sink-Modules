@@ -65,7 +65,7 @@ class AuxInterface:
         :return: A tuple of aux signal values
         """
 
-        return self.aux0, self.aux1, self.aux2
+        return self.aux0.val[:], self.aux1.val[:], self.aux2.val[:]
 
     def enable_aux(self):
 
@@ -84,3 +84,11 @@ class AuxInterface:
 
         self.ade.next = 0
         yield self.clock.posedge
+
+    def get_ade(self):
+
+        """
+        :return: ADE signal value
+        """
+
+        return self.ade.val
