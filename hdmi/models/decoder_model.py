@@ -6,6 +6,30 @@ class DecoderModel:
     def __init__(self, clock, data_in, video_preamble, data_island_preamble, c0,
                  c1, vde, ade, video_out, audio_out, channel='BLUE'):
 
+        """
+         A non-convertible HDMI Decoder Model which decodes the TMDS data and outputs the video and aux data.
+         This is modelled after the xapp495 decoder module.
+
+        Args:
+            :param clock: The system clock or the pixel clock
+            :param data_in: The TMDS data (10 bits width) to be decoded
+            :param video_preamble: signal to detect the video preamble in the input data
+            :param data_island_preamble: signal to detect the data island preamble in the input data
+            :param c0: Control signal (hsync for Blue channel)
+            :param c1: Control signal (vsync for Blue channel)
+            :param vde: Video Data enable
+            :param ade: Audio data enable
+            :param video_out: Output video data
+            :param audio_out: Output audio (or aux) data.
+            :param channel: Color of the channel ('RED', 'GREEN' or 'BLUE'). Default value is 'BLUE'
+
+        Usage:
+            decoder_model = DecoderModel(*params)
+            process_inst = decoder_model.process()
+            process_inst.run_sim()
+
+        """
+
         self.clock = clock
         self.data_in = data_in
         self.video_preamble = video_preamble
@@ -19,15 +43,36 @@ class DecoderModel:
         self.channel = channel
 
     def get_video_data(self):
+
+        """
+        :return: The output video data
+        """
+
         return self.video_out
 
     def get_audio_data(self):
+
+        """
+        :return: The output audio data(or AUX data)
+        """
+
         return self.audio_out
 
     def read(self):
+
+        """
+        Waits for a positive edge of clock
+        """
+
         yield self.clock.posedge
 
     def write_data(self, data_in):
+
+        """
+        Writes the given data onto the input data signal
+        :param data_in: 10 bit intbv value(or a 10 bit integer)
+        """
+
         self.data_in.next = data_in
         yield self.clock.posedge
 
@@ -35,13 +80,23 @@ class DecoderModel:
     @block
     def process(self):
 
+        """
+        It simulates the decoding process of the TMDS decoder.
+
+        Usage:
+            process_inst = decoder_model.process()
+            process_inst.run_sim()
+        """
+
         control_token = [int('1101010100', 2),  # 00
                          int('0010101011', 2),  # 01
                          int('0101010100', 2),  # 10
                          int('1010101011', 2)]  # 11
 
+        # Control signals
         control, _control, control_end = [Signal(bool(0)) for _ in range(3)]
 
+        # Signals to detect video period and data island period
         video_period = Signal(bool(0))
         data_island_period = Signal(bool(0))
 

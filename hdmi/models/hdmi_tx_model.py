@@ -6,6 +6,25 @@ from hdmi.models import EncoderModel
 class HDMITxModel:
     def __init__(self, clock, clock5x, clock5x_not, reset, video_interface, aux_interface, hdmi_interface):
 
+        """
+         A non-convertible HDMI Transmitter Model which encodes the input video and AUX data and transmits it.
+         This is modelled after the xapp495 HDMI Tx module.
+
+        Args:
+            :param clock: System clock or the pixel clock
+            :param clock5x: clock with frequency 5 times that of pixel clock
+            :param clock5x_not: clock with five times the frequency of pixel clock and phase shifted ny 180 degrees
+            :param reset: Reset signal
+            :param video_interface: An instance of the VideoInterface class
+            :param aux_interface: An instance of the AUXInterface class
+            :param hdmi_interface: An instance of the HDMIInterface class
+
+        Usage:
+            hdmi_tx_model = HDMITxModel(*params)
+            process_inst = hdmi_tx_model.process()
+            process_inst.run_sim()
+        """
+
         self.clock = clock
         self.clock5x = clock5x
         self.clock5x_not = clock5x_not
@@ -17,6 +36,14 @@ class HDMITxModel:
     @block
     def process(self):
 
+        """
+        It simulates the process of the transmitting data by the HDMI transmitter.
+
+        Usage:
+            process_inst = hdmi_tx_model.process()
+            process_inst.run_sim()
+        """
+
         data_island_preamble = (1, 0, 1, 0)
         video_preamble = (1, 0, 0, 0)
         null_control = (0, 0, 0, 0)
@@ -25,18 +52,22 @@ class HDMITxModel:
         green_data_out = Signal(intbv(0)[10:0])
         blue_data_out = Signal(intbv(0)[10:0])
 
+        # A list of signals used to delay vde and ade by 10 clock cycles
         _vde = [Signal(bool(0)) for _ in range(10)]
         _ade = [Signal(bool(0)) for _ in range(10)]
 
+        # A list of signals used to delay hsync and vsync by 10 clock cycles
         _hsync = [Signal(bool(0)) for _ in range(10)]
         _vsync = [Signal(bool(0)) for _ in range(10)]
 
         g_c0, r_c0, g_c1, r_c1 = [Signal(bool(0)) for _ in range(4)]
 
+        # # A list of signals used to delay red, green, blue by 10 clock cycles
         _red = [Signal(intbv(0)[self.video_interface.color_depth[0]:]) for _ in range(10)]
         _green = [Signal(intbv(0)[self.video_interface.color_depth[1]:]) for _ in range(10)]
         _blue = [Signal(intbv(0)[self.video_interface.color_depth[2]:]) for _ in range(10)]
 
+        # A list of signals used to delay aux signal by 10 clock cycles
         _aux0 = [Signal(intbv(0)[self.aux_interface.aux_depth[0]:]) for _ in range(10)]
         _aux1 = [Signal(intbv(0)[self.aux_interface.aux_depth[1]:]) for _ in range(10)]
         _aux2 = [Signal(intbv(0)[self.aux_interface.aux_depth[2]:]) for _ in range(10)]
@@ -97,6 +128,7 @@ class HDMITxModel:
             else:
                 g_c0.next, g_c1.next, r_c0.next, r_c1.next = null_control
 
+        # Serializes the parallel data
         @instance
         def serialize():
             yield self.clock.posedge

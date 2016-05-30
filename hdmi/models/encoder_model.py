@@ -10,16 +10,22 @@ class EncoderModel:
          A non convertible model to simulate the behaviour of
          a TMDS and TERC4 encoder.
 
-        :param clock: pixel clock as input
-        :param reset: asynchronous reset input (active high)
-        :param video_in: video input of a single channel
-        :param audio_in: audio input
-        :param c0: used to determine preamble
-        :param c1: used to determine preamble
-        :param vde: video data enable
-        :param ade: audio data enable
-        :param data_out: 10 bit parallel output
-        :param channel: Indicates 'RED', 'GREEN' or 'BLUE' channel
+        Args:
+            :param clock: pixel clock as input
+            :param reset: asynchronous reset input (active high)
+            :param video_in: video input of a single channel
+            :param audio_in: audio input
+            :param c0: used to determine preamble
+            :param c1: used to determine preamble
+            :param vde: video data enable
+            :param ade: audio data enable
+            :param data_out: 10 bit parallel output
+            :param channel: Indicates 'RED', 'GREEN' or 'BLUE' channel
+
+        Usage:
+            encoder_model = EncoderModel(*params)
+            process_inst = encoder_model.process()
+            process_inst.run_sim()
         """
         self.channel = channel
         self.clock = clock
@@ -35,15 +41,31 @@ class EncoderModel:
 
     def write_video(self, video_in):
 
+        """
+        Writes the given data onto the input video data signal
+        :param video_in: An 8-bit integer value(or intbv value)
+        """
+
         yield self.clock.posedge
         self.video_in.next = video_in
 
     def write_audio(self, audio_in):
 
+        """
+        Writes the given data onto the input audio data signal
+        :param audio_in: An 4-bit integer value(or intbv value)
+        """
+
         yield self.clock.posedge
         self.audio_in.next = audio_in
 
     def write_controls(self, c0, c1, vde, ade):
+
+        """
+        Writes the value onto the control signals
+
+        :param c0, c1, vde, ade: values to be assigned to their corresponding ports
+        """
 
         yield self.clock.posedge
         self.c0.next = c0
@@ -51,15 +73,15 @@ class EncoderModel:
         self.vde.next = vde
         self.ade.next = ade
 
-    def read(self):
-
-        pass
-
     @block
     def process(self):
 
         """
-        create an instance of this function and it can be simulated
+        It simulates the encoding process of the TMDS encoder.
+
+        Usage:
+            process_inst = encoder_model.process()
+            process_inst.run_sim()
         """
 
         control_token = ['1101010100',  # 00
@@ -87,7 +109,7 @@ class EncoderModel:
         _video_in = Signal(intbv(0, min=self.video_in.min,
                                  max=self.video_in.max))
 
-        # 1 bit more than the input (After first stage of encoding)
+        # 1 bit more than the input (Signal after first stage of encoding the input)
         q_m = Signal(intbv(0, min=self.video_in.min,
                            max=self.video_in.max * 2))
 
@@ -96,14 +118,19 @@ class EncoderModel:
 
         count = Signal(intbv(0)[5:0])
 
+        # delayed versions of vde signal
         _vde, __vde = [Signal(bool(0)) for _ in range(2)]
 
+        # delayed versions of ade signal
         _ade, __ade, ___ade, ____ade = [Signal(bool(0)) for _ in range(4)]
 
+        # delayed versions of c0 signal
         _c0, __c0 = [Signal(bool(0)) for _ in range(2)]
 
+        # delayed versions of c1 signal
         _c1, __c1 = [Signal(bool(0)) for _ in range(2)]
 
+        # delayed versions of audio_in signal
         _audio_in, __audio_in = [Signal(intbv(0, min=self.audio_in.min,
                                               max=self.audio_in.max)) for _ in range(2)]
 

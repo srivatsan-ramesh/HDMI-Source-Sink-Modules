@@ -6,12 +6,37 @@ from hdmi.models import DecoderModel
 class HDMIRxModel:
 
     def __init__(self, video_interface, aux_interface, hdmi_interface):
+
+        """
+        A non-convertible HDMI Transmitter Model which encodes the input video and AUX data and transmits it.
+        This is modelled after the xapp495 HDMI Tx module.
+
+        Args:
+            :param video_interface: An instance of the VideoInterface class
+            :param aux_interface: An instance of the AUXInterface class
+            :param hdmi_interface: An instance of the HDMIInterface class
+
+        Usage:
+            hdmi_rx_model = HDMIRxModel(*params)
+            process_inst = hdmi_rx_model.process()
+            process_inst.run_sim()
+        """
+
         self.video_interface = video_interface
         self.aux_interface = aux_interface
         self.hdmi_interface = hdmi_interface
 
     @block
     def process(self):
+
+        """
+        It simulates the process of the receiving data by the HDMI receiver.
+
+        Usage:
+            process_inst = hdmi_rx_model.process()
+            process_inst.run_sim()
+        """
+
         red = Signal(intbv(0)[10:0])
         green = Signal(intbv(0)[10:0])
         blue = Signal(intbv(0)[10:0])
@@ -19,6 +44,7 @@ class HDMIRxModel:
         video_preamble = Signal(bool(0))
         data_island_preamble = Signal(bool(0))
 
+        # control signals for different channels
         r_c0, g_c0, b_c0 = [Signal(bool(0)) for _ in range(3)]
         r_c1, g_c1, b_c1 = [Signal(bool(0)) for _ in range(3)]
         r_vde, g_vde, b_vde = [Signal(bool(0)) for _ in range(3)]
@@ -58,6 +84,7 @@ class HDMIRxModel:
         green_list = ['0' for _ in range(10)]
         blue_list = ['0' for _ in range(10)]
 
+        # Deserialize the parallel serial input
         @instance
         def deserialize():
             while True:
