@@ -46,9 +46,9 @@ def hdmi_encoder(p_clock, p_clockx2, p_clockx10, serdes_strobe, reset,
     tmds_clock = Signal(bool(0))
 
     clock_out = serdes_n_to_1(p_clockx10, serdes_strobe, reset, p_clockx2, tmds_clock_init, tmds_clock, 5)
-    oserdes0 = serdes_n_to_1(p_clockx10, serdes_strobe, reset, p_clockx2, tmds_data0, tmds_init0)
-    oserdes1 = serdes_n_to_1(p_clockx10, serdes_strobe, reset, p_clockx2, tmds_data1, tmds_init1)
-    oserdes2 = serdes_n_to_1(p_clockx10, serdes_strobe, reset, p_clockx2, tmds_data2, tmds_init2)
+    oserdes0 = serdes_n_to_1(p_clockx10, serdes_strobe, reset, p_clockx2, tmds_data0, tmds_init0, 5)
+    oserdes1 = serdes_n_to_1(p_clockx10, serdes_strobe, reset, p_clockx2, tmds_data1, tmds_init1, 5)
+    oserdes2 = serdes_n_to_1(p_clockx10, serdes_strobe, reset, p_clockx2, tmds_data2, tmds_init2, 5)
 
     @always_comb
     def OBUFDS():

@@ -18,7 +18,7 @@ def serdes_n_to_1(io_clock, serdes_strobe, reset, g_clock, data_in, iob_data_out
             else:
                 iob_data_out.next = data_in[i]
                 i += 1
-                if i == 5:
+                if i == factor:
                     i = 0
 
     count += 1
