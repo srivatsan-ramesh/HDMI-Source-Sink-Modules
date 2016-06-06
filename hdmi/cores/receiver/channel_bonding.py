@@ -1,4 +1,4 @@
-from myhdl import block, Signal, always_comb, intbv, always
+from myhdl import block, Signal, always_comb, intbv, always, modbv
 
 from hdmi.cores.common import DRAM16XN
 
@@ -18,7 +18,7 @@ def channel_bonding(clock, raw_data, i_am_valid, other_ch0_valid, other_ch1_vali
     def assign_raw_data():
         raw_data_valid.next = other_ch0_valid and other_ch1_valid and i_am_valid
 
-    write_addr, read_addr = [Signal(intbv(0)[4:0]) for _ in range(2)]
+    write_addr, read_addr = [Signal(modbv(0)[4:0]) for _ in range(2)]
     write_enable = Signal(False)
 
     @always(clock.posedge)
