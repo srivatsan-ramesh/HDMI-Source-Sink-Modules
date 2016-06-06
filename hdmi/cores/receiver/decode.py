@@ -47,7 +47,10 @@ def decode(reset, p_clock, p_clockx2, p_clockx10, serdes_strobe, data_in_p, data
                           serdes_strobe, reset, p_clockx2, bit_slipx2, raw_5_bit)
 
     phase_aligner_0 = phase_aligner(reset, p_clock, raw_data, bit_slip, flip_gear, i_am_valid)
-    phase_align_err = Signal(bool(0))
+
+    @always_comb
+    def align_error():
+        phase_align_err.next = 0
 
     data_in = Signal(intbv(0)[10:0])
     channel_bond = channel_bonding(p_clock, raw_data, i_am_valid, other_ch0_valid, other_ch1_valid,
@@ -212,6 +215,8 @@ def decode(reset, p_clock, p_clockx2, p_clockx10, serdes_strobe, data_in_p, data
                         audio_out.next = audio_out
                         ade.next = 0
                         vde.next = 0
+
             s_data_out.next = data_in
-    return assign_flip_gear, toggle_toggle, assign_toggle, make_10bit, bitslip, des_0, \
-           phase_aligner_0, channel_bond, continuous_assignment, sequential_logic
+
+    return assign_flip_gear, toggle_toggle, assign_toggle, make_10bit, bitslip, align_error, \
+           des_0, phase_aligner_0, channel_bond, continuous_assignment, sequential_logic
