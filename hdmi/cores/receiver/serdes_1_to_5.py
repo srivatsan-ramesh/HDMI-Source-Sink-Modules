@@ -8,7 +8,7 @@ from hdmi.cores.primitives.input_serdes import cascaded_iserdes
 def serdes_1_to_5(use_phase_detector, data_in_p, data_in_n, rx_io_clock,
                   rx_serdes_strobe, reset, g_clock, bit_slip, data_out,
                   diff_term='TRUE', bit_slip_enable='TRUE'):
-    # TODO complete function definition
+
     sim_tap_delay = 49
     d_delay_m, d_delay_s, busy_s, rx_data_in, cascade, pd_edge = [Signal(False) for _ in range(6)]
     counter = Signal(modbv(0)[9:0])
