@@ -1,7 +1,7 @@
 from myhdl import block, Signal, modbv, intbv, always
 
 from hdmi.cores.primitives import buffer_ds, cascaded_io_delay
-from hdmi.cores.primitives.input_serdes import cascaded_iserdes
+from hdmi.cores.primitives import cascaded_iserdes
 
 
 @block

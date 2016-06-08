@@ -60,7 +60,7 @@ IODELAY2 #(
   .DOUT                 (),                   // output data to IOB
   .T                    (1'b1),               // tri-state control from OLOGIC/OSERDES2
   .ODATAIN              (1'b0),               // data from OLOGIC/OSERDES2
-  .DATAOUT              (ddly_s),             // Slave output data to ILOGIC/ISERDES2
+  .DATAOUT              ($data_out_slave),             // Slave output data to ILOGIC/ISERDES2
   .DATAOUT2             (),                   //
   .IOCLK0               ($io_clock_0),        // High speed IO clock for calibration
   .IOCLK1               (1'b0),

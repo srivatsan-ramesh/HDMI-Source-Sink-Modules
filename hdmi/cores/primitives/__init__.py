@@ -6,3 +6,5 @@ from .pll_buffer import pll_buffer
 from .input_output_delay import cascaded_io_delay
 from .ram16x1d import ram16x1d
 from .dram16xn import DRAM16XN
+from .input_serdes import cascaded_iserdes
+
