@@ -4,7 +4,7 @@ inst_count = 0
 
 
 @block
-def buffer_ds(input_p, input_n, output):
+def buffer_ds(input_p, input_n, output, diff_term='FALSE'):
 
     global inst_count
 
@@ -20,5 +20,5 @@ def buffer_ds(input_p, input_n, output):
     return IBUFDS_primitive
 
 buffer_ds.verilog_code = """
-    IBUFDS  #(.IOSTANDARD("TMDS_33"), .DIFF_TERM("FALSE")) ibuf_$inst_count (.I($input_p), .IB($input_n), .O($output));
+    IBUFDS  #(.IOSTANDARD("TMDS_33"), .DIFF_TERM($diff_term)) ibuf_$inst_count (.I($input_p), .IB($input_n), .O($output));
 """
