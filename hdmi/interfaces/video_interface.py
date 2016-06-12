@@ -6,14 +6,15 @@ class VideoInterface:
     def __init__(self, clock, resolution=(640, 480), color_depth=(8, 8, 8)):
 
         """
+
          This interface is the internal interface modeled after
          the xapp495 internal video interface
 
          Args:
-             :param clock: pixel clock
-             :param resolution (optional): Resolution of the video to be transmitted or received.
+             clock: pixel clock
+             resolution (optional): Resolution of the video to be transmitted or received.
                                            Default value: (640, 480)
-             :param color_depth (optional): The bus width of each channel of the video
+             color_depth (optional): The bus width of each channel of the video
                                             Default value: (8, 8, 8)
 
          Usage:
@@ -45,10 +46,11 @@ class VideoInterface:
     def write_pixel(self, pixel):
 
         """
+
          Write transactor for passing signals to video interface
 
          Args:
-            :param pixel: The pixel value is a tuple (R, G, B)
+            pixel: The pixel value is a tuple (R, G, B)
 
          Usage:
             # Values passed should be non negative integers less than 2**color_depth[i]
@@ -86,7 +88,10 @@ class VideoInterface:
     def get_pixel(self):
 
         """
-        :return: pixel values R, G, B
+
+        Returns:
+            pixel values R, G, B
+
         """
 
         return [self.red.val[:], self.green.val[:], self.blue.val[:]]
@@ -94,7 +99,9 @@ class VideoInterface:
     def reset_cursor(self):
 
         """
+
         Resets the horizontal and vertical counters to 0.
+
         """
 
         self.hpixel, self.vpixel = 0, 0
@@ -102,7 +109,9 @@ class VideoInterface:
     def enable_video(self):
 
         """
+
         Makes the VDE signal 1
+
         """
 
         self.vde.next = 1
@@ -111,7 +120,9 @@ class VideoInterface:
     def disable_video(self):
 
         """
+
         Makes the VDE signal 0
+
         """
 
         self.vde.next = 0
@@ -120,7 +131,10 @@ class VideoInterface:
     def get_vde(self):
 
         """
-        :return: returns the VDE signal
+
+        Returns:
+            the VDE signal value
+
         """
 
         return self.vde.val

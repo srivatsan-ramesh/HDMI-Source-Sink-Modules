@@ -4,25 +4,28 @@ from hdmi.models import EncoderModel
 
 
 class HDMITxModel:
+
     def __init__(self, clock, clock5x, clock5x_not, reset, video_interface, aux_interface, hdmi_interface):
 
         """
+
          A non-convertible HDMI Transmitter Model which encodes the input video and AUX data and transmits it.
          This is modelled after the xapp495 HDMI Tx module.
 
         Args:
-            :param clock: System clock or the pixel clock
-            :param clock5x: clock with frequency 5 times that of pixel clock
-            :param clock5x_not: clock with five times the frequency of pixel clock and phase shifted ny 180 degrees
-            :param reset: Reset signal
-            :param video_interface: An instance of the VideoInterface class
-            :param aux_interface: An instance of the AUXInterface class
-            :param hdmi_interface: An instance of the HDMIInterface class
+            clock: System clock or the pixel clock
+            clock5x: clock with frequency 5 times that of pixel clock
+            clock5x_not: clock with five times the frequency of pixel clock and phase shifted ny 180 degrees
+            reset: Reset signal
+            video_interface: An instance of the VideoInterface class
+            aux_interface: An instance of the AUXInterface class
+            hdmi_interface: An instance of the HDMIInterface class
 
         Usage:
             hdmi_tx_model = HDMITxModel(*params)
             process_inst = hdmi_tx_model.process()
             process_inst.run_sim()
+
         """
 
         self.clock = clock
@@ -37,11 +40,13 @@ class HDMITxModel:
     def process(self):
 
         """
+
         It simulates the process of the transmitting data by the HDMI transmitter.
 
         Usage:
             process_inst = hdmi_tx_model.process()
             process_inst.run_sim()
+
         """
 
         data_island_preamble = (1, 0, 1, 0)

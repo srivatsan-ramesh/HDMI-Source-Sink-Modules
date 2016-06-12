@@ -8,18 +8,20 @@ class HDMIRxModel:
     def __init__(self, video_interface, aux_interface, hdmi_interface):
 
         """
+
         A non-convertible HDMI Transmitter Model which encodes the input video and AUX data and transmits it.
         This is modelled after the xapp495 HDMI Tx module.
 
         Args:
-            :param video_interface: An instance of the VideoInterface class
-            :param aux_interface: An instance of the AUXInterface class
-            :param hdmi_interface: An instance of the HDMIInterface class
+            video_interface: An instance of the VideoInterface class
+            aux_interface: An instance of the AUXInterface class
+            hdmi_interface: An instance of the HDMIInterface class
 
         Usage:
             hdmi_rx_model = HDMIRxModel(*params)
             process_inst = hdmi_rx_model.process()
             process_inst.run_sim()
+
         """
 
         self.video_interface = video_interface
@@ -30,11 +32,13 @@ class HDMIRxModel:
     def process(self):
 
         """
+
         It simulates the process of the receiving data by the HDMI receiver.
 
         Usage:
             process_inst = hdmi_rx_model.process()
             process_inst.run_sim()
+
         """
 
         red = Signal(intbv(0)[10:0])

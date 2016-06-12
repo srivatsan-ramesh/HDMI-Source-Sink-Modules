@@ -6,26 +6,29 @@ from myhdl import always, Signal, intbv, ConcatSignal, always_seq, instances, bl
 class EncoderModel:
 
     def __init__(self, clock, reset, video_in, audio_in, c0, c1, vde, ade, data_out, channel='BLUE'):
+
         """
+
          A non convertible model to simulate the behaviour of
          a TMDS and TERC4 encoder.
 
         Args:
-            :param clock: pixel clock as input
-            :param reset: asynchronous reset input (active high)
-            :param video_in: video input of a single channel
-            :param audio_in: audio input
-            :param c0: used to determine preamble
-            :param c1: used to determine preamble
-            :param vde: video data enable
-            :param ade: audio data enable
-            :param data_out: 10 bit parallel output
-            :param channel: Indicates 'RED', 'GREEN' or 'BLUE' channel
+            clock: pixel clock as input
+            reset: asynchronous reset input (active high)
+            video_in: video input of a single channel
+            audio_in: audio input
+            c0: used to determine preamble
+            c1: used to determine preamble
+            vde: video data enable
+            ade: audio data enable
+            data_out: 10 bit parallel output
+            channel: Indicates 'RED', 'GREEN' or 'BLUE' channel
 
         Usage:
             encoder_model = EncoderModel(*params)
             process_inst = encoder_model.process()
             process_inst.run_sim()
+
         """
         self.channel = channel
         self.clock = clock
@@ -42,8 +45,12 @@ class EncoderModel:
     def write_video(self, video_in):
 
         """
+
         Writes the given data onto the input video data signal
-        :param video_in: An 8-bit integer value(or intbv value)
+
+        Args:
+            video_in: An 8-bit integer value(or intbv value)
+
         """
 
         yield self.clock.posedge
@@ -53,7 +60,10 @@ class EncoderModel:
 
         """
         Writes the given data onto the input audio data signal
-        :param audio_in: An 4-bit integer value(or intbv value)
+
+        Args:
+            audio_in: An 4-bit integer value(or intbv value)
+
         """
 
         yield self.clock.posedge
@@ -62,9 +72,12 @@ class EncoderModel:
     def write_controls(self, c0, c1, vde, ade):
 
         """
+
         Writes the value onto the control signals
 
-        :param c0, c1, vde, ade: values to be assigned to their corresponding ports
+        Args:
+            c0, c1, vde, ade: values to be assigned to their corresponding ports
+
         """
 
         yield self.clock.posedge
@@ -77,11 +90,13 @@ class EncoderModel:
     def process(self):
 
         """
+
         It simulates the encoding process of the TMDS encoder.
 
         Usage:
             process_inst = encoder_model.process()
             process_inst.run_sim()
+
         """
 
         control_token = ['1101010100',  # 00
