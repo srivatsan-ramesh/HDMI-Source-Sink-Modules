@@ -10,7 +10,7 @@ install:
   - pip install coveralls
 
 script:
-  - coverage run --source=hdmi py.test -s
+  - coverage run --source=hdmi -m py.test -s
 
 after_success:
   - coveralls
