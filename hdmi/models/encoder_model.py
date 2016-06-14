@@ -2,7 +2,7 @@ import math
 
 from myhdl import always, Signal, intbv, ConcatSignal, always_seq, instances, block
 
-from hdmi.models import CONTROL_TOKEN
+from hdmi.models.constants import CONTROL_TOKEN
 
 
 class EncoderModel:
@@ -263,7 +263,7 @@ class EncoderModel:
                     self.data_out.next = data_island_guard_band
                 else:
                     concat_c = ConcatSignal(__c1, __c0)
-                    self.data_out.next = int(CONTROL_TOKEN[concat_c], 2)
+                    self.data_out.next = CONTROL_TOKEN[concat_c]
 
                 count.next = 0
 
