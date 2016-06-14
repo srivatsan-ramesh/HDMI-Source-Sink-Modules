@@ -2,10 +2,13 @@ import math
 
 from myhdl import always, Signal, intbv, ConcatSignal, always_seq, instances, block
 
+from hdmi.models import CONTROL_TOKEN
+
 
 class EncoderModel:
 
-    def __init__(self, clock, reset, video_in, audio_in, c0, c1, vde, ade, data_out, channel='BLUE'):
+    def __init__(self, clock, reset, video_in, audio_in, c0, c1, vde, ade,
+                 data_out, channel='BLUE'):
 
         """
 
@@ -99,11 +102,6 @@ class EncoderModel:
 
         """
 
-        control_token = ['1101010100',  # 00
-                         '0010101011',  # 01
-                         '0101010100',  # 10
-                         '1010101011']  # 11
-
         video_guard_band = {
             'BLUE': int('1011001100', 2),
             'GREEN': int('0100110011', 2)
@@ -185,8 +183,9 @@ class EncoderModel:
 
             _q_m.next = q_m
 
-        @always(____ade, self.ade, __ade, no_of_ones_video_in, _video_in, count, no_of_ones_q_m, no_of_zeros_q_m, q_m,
-                digb_period, __c1, __c0, __audio_in, decision1)
+        @always(____ade, self.ade, __ade, no_of_ones_video_in, _video_in, count,
+                no_of_ones_q_m, no_of_zeros_q_m, q_m, digb_period, __c1, __c0,
+                __audio_in, decision1)
         def continuous_assignment():
 
             digb_period.next = (not __ade) and (____ade or self.ade)
@@ -264,7 +263,7 @@ class EncoderModel:
                     self.data_out.next = data_island_guard_band
                 else:
                     concat_c = ConcatSignal(__c1, __c0)
-                    self.data_out.next = int(control_token[concat_c], 2)
+                    self.data_out.next = int(CONTROL_TOKEN[concat_c], 2)
 
                 count.next = 0
 

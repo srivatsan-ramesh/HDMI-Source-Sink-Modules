@@ -9,8 +9,9 @@ class HDMIRxModel:
 
         """
 
-        A non-convertible HDMI Transmitter Model which encodes the input video and AUX data and transmits it.
-        This is modelled after the xapp495 HDMI Tx module.
+        A non-convertible HDMI Transmitter Model which encodes the input
+        video and AUX data and transmits it. This is modelled after the xapp495
+        HDMI Tx module.
 
         Args:
             video_interface: An instance of the VideoInterface class

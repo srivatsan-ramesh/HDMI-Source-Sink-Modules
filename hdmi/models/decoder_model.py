@@ -1,5 +1,7 @@
 from myhdl import Signal, intbv, always, always_comb, instances, block
 
+from hdmi.models import CONTROL_TOKEN
+
 
 class DecoderModel:
 
@@ -8,8 +10,8 @@ class DecoderModel:
 
         """
 
-         A non-convertible HDMI Decoder Model which decodes the TMDS data and outputs the video and aux data.
-         This is modelled after the xapp495 decoder module.
+         A non-convertible HDMI Decoder Model which decodes the TMDS data and outputs
+         the video and aux data. This is modelled after the xapp495 decoder module.
 
         Args:
             clock: The system clock or the pixel clock
@@ -103,11 +105,6 @@ class DecoderModel:
 
         """
 
-        control_token = [int('1101010100', 2),  # 00
-                         int('0010101011', 2),  # 01
-                         int('0101010100', 2),  # 10
-                         int('1010101011', 2)]  # 11
-
         # Control signals
         control, _control, control_end = [Signal(bool(0)) for _ in range(3)]
 
@@ -119,7 +116,10 @@ class DecoderModel:
 
         @always_comb
         def continuous_assignment():
-            data.next = ~self.data_in[8:0] if self.data_in[9] == 1 else self.data_in[8:0]
+            if self.data_in[9]:
+                data.next = ~self.data_in[8:0]
+            else:
+                data.next = self.data_in[8:0]
             control_end.next = (not control) & _control
 
         @always(self.clock.posedge)
@@ -136,28 +136,28 @@ class DecoderModel:
             elif control_end and self.data_island_preamble:
                 data_island_period.next = 1
 
-            if self.data_in == control_token[0]:
+            if self.data_in == CONTROL_TOKEN[0]:
                 self.c0.next = 0
                 self.c1.next = 0
                 self.vde.next = 0
                 self.ade.next = 0
                 control.next = 1
 
-            elif self.data_in == control_token[1]:
+            elif self.data_in == CONTROL_TOKEN[1]:
                 self.c0.next = 1
                 self.c1.next = 0
                 self.vde.next = 0
                 self.ade.next = 0
                 control.next = 1
 
-            elif self.data_in == control_token[2]:
+            elif self.data_in == CONTROL_TOKEN[2]:
                 self.c0.next = 0
                 self.c1.next = 1
                 self.vde.next = 0
                 self.ade.next = 0
                 control.next = 1
 
-            elif self.data_in == control_token[3]:
+            elif self.data_in == CONTROL_TOKEN[3]:
                 self.c0.next = 1
                 self.c1.next = 1
                 self.vde.next = 0
@@ -169,7 +169,10 @@ class DecoderModel:
                 if video_period:
                     self.video_out.next[0] = data[0]
                     for i in range(1, 8):
-                        self.video_out.next[i] = data[i] ^ (data[i-1] if self.data_in[8] == 1 else not data[i-1])
+                        if self.data_in[8]:
+                            self.video_out.next[i] = data[i] ^ data[i-1]
+                        else:
+                            self.video_out.next[i] = not data[i-1]
                     self.ade.next = 0
                     self.vde.next = 1
 
