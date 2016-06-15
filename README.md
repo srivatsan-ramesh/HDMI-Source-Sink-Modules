@@ -48,10 +48,13 @@ To initialize the interfaces -
 
 ```
     # Interfaces for Tx Model
+    
   >> video_interface_tx = VideoInterface(clock)
   >> aux_interface_tx = AuxInterface(clock)
   >> hdmi_interface_tx = HDMIInterface(clock5x, clock5x_not)
+  
     # Interfaces for Rx Model
+    
   >> video_interface_rx = VideoInterface(clock)
   >> aux_interface_rx = AuxInterface(clock)
   >> hdmi_interface_rx = HDMIInterface(clock5x, clock5x_not)
