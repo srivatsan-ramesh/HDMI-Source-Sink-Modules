@@ -77,7 +77,10 @@ class DecoderModel(object):
 
         @always_comb
         def continuous_assignment():
-            data.next = ~self.data_in[8:0] if self.data_in[9] == 1 else self.data_in[8:0]
+            if self.data_in[9]:
+                data.next = ~self.data_in[8:0]
+            else:
+                data.next = self.data_in[8:0]
             control_end.next = (not control) & _control
 
         @always(self.clock.posedge)
