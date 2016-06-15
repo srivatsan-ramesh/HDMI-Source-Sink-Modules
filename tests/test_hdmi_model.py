@@ -1,3 +1,4 @@
+import itertools
 from myhdl import instance, Signal, ResetSignal, block, delay, StopSimulation
 
 from hdmi.interfaces import VideoInterface, AuxInterface, HDMIInterface
@@ -28,7 +29,7 @@ def test_hdmi_model():
     clk_5x = clock_driver(clock5x, 2)
     clk_5x_not = clock_driver(clock5x_not, 2)
 
-    video_data = [int('10101010', 2)]*3
+    video_source = itertools.product(['0', '1'], repeat=8)
     aux_data = (10, 15, 10)
     hdmi_tx_inst = hdmi_tx_model.process()
     hdmi_tx_inst.name = 'tx_process'
@@ -83,9 +84,11 @@ def test_hdmi_model():
 
         yield video_interface_tx.disable_video(), aux_interface_tx.disable_aux()
         append_signals()
+        video_data = [int(''.join(next(video_source)), 2) for _ in range(3)]
         yield video_interface_tx.enable_video(), video_interface_tx.write_pixel(video_data)
         append_signals()
-        for _ in range(100):
+        for _ in range(83):
+            video_data = [int(''.join(next(video_source)), 2) for __ in range(3)]
             yield video_interface_tx.write_pixel(video_data)
             append_signals()
         yield video_interface_tx.disable_video()

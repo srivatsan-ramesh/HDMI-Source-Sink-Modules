@@ -3,7 +3,7 @@ from myhdl import Signal, intbv, always, always_comb, instances, block
 from hdmi.models.constants import CONTROL_TOKEN
 
 
-class DecoderModel:
+class DecoderModel(object):
 
     def __init__(self, clock, data_in, video_preamble, data_island_preamble, c0,
                  c1, vde, ade, video_out, audio_out, channel='BLUE'):
@@ -43,30 +43,6 @@ class DecoderModel:
         self.video_out = video_out
         self.audio_out = audio_out
         self.channel = channel
-
-    def get_video_data(self):
-
-        """
-        :return: The output video data
-        """
-
-        return self.video_out
-
-    def get_audio_data(self):
-
-        """
-        :return: The output audio data(or AUX data)
-        """
-
-        return self.audio_out
-
-    def read(self):
-
-        """
-        Waits for a positive edge of clock
-        """
-
-        yield self.clock.posedge
 
     def write_data(self, data_in):
 

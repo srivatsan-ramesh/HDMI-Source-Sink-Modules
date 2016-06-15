@@ -1,11 +1,11 @@
 import math
 
-from myhdl import always, Signal, intbv, ConcatSignal, always_seq, instances, block
+from myhdl import always, Signal, intbv, ConcatSignal, always_seq, instances, block, modbv
 
 from hdmi.models.constants import CONTROL_TOKEN
 
 
-class EncoderModel:
+class EncoderModel(object):
 
     def __init__(self, clock, reset, video_in, audio_in, c0, c1, vde, ade,
                  data_out, channel='BLUE'):
@@ -44,50 +44,6 @@ class EncoderModel:
         self.ade = ade
         self.data_out = data_out
         self.color_depth = int(math.log(video_in.max, 2))
-
-    def write_video(self, video_in):
-
-        """
-
-        Writes the given data onto the input video data signal
-
-        Args:
-            video_in: An 8-bit integer value(or intbv value)
-
-        """
-
-        yield self.clock.posedge
-        self.video_in.next = video_in
-
-    def write_audio(self, audio_in):
-
-        """
-        Writes the given data onto the input audio data signal
-
-        Args:
-            audio_in: An 4-bit integer value(or intbv value)
-
-        """
-
-        yield self.clock.posedge
-        self.audio_in.next = audio_in
-
-    def write_controls(self, c0, c1, vde, ade):
-
-        """
-
-        Writes the value onto the control signals
-
-        Args:
-            c0, c1, vde, ade: values to be assigned to their corresponding ports
-
-        """
-
-        yield self.clock.posedge
-        self.c0.next = c0
-        self.c1.next = c1
-        self.vde.next = vde
-        self.ade.next = ade
 
     @block
     def process(self):
@@ -129,7 +85,7 @@ class EncoderModel:
         no_of_ones_q_m = Signal(intbv(0)[math.log(self.color_depth, 2)+1:])
         no_of_zeros_q_m = Signal(intbv(0)[math.log(self.color_depth, 2)+1:])
 
-        count = Signal(intbv(0)[5:0])
+        count = Signal(modbv(0)[5:0])
 
         # delayed versions of vde signal
         _vde, __vde = [Signal(bool(0)) for _ in range(2)]
@@ -162,8 +118,8 @@ class EncoderModel:
 
             no_of_ones_video_in.next = bin(self.video_in).count("1")
             _video_in.next = self.video_in
-            no_of_ones_q_m.next = bin(q_m).count("1")
-            no_of_zeros_q_m.next = 8 - bin(q_m).count("1")
+            no_of_ones_q_m.next = bin(q_m[8:0]).count("1")
+            no_of_zeros_q_m.next = 8 - bin(q_m[8:0]).count("1")
 
             _vde.next = self.vde
             __vde.next = _vde
@@ -191,7 +147,7 @@ class EncoderModel:
             digb_period.next = (not __ade) and (____ade or self.ade)
 
             decision1.next = (no_of_ones_video_in > 4) or \
-                             (no_of_ones_video_in == 4 and _video_in[0] == False)
+                             (no_of_ones_video_in == 4 and not _video_in[0])
             decision2.next = (count == 0) | (no_of_zeros_q_m == no_of_ones_q_m)
             decision3.next = (not count[4]) & (no_of_ones_q_m > no_of_zeros_q_m) | \
                              (count[4]) & (no_of_ones_q_m < no_of_zeros_q_m)

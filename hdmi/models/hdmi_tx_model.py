@@ -3,7 +3,7 @@ from myhdl import Signal, always, intbv, instance, block, delay
 from hdmi.models import EncoderModel
 
 
-class HDMITxModel:
+class HDMITxModel(object):
 
     def __init__(self, clock, clock5x, clock5x_not, reset, video_interface, aux_interface, hdmi_interface):
 

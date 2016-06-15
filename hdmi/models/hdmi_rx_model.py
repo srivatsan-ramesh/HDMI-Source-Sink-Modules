@@ -3,7 +3,7 @@ from myhdl import Signal, always_comb, intbv, always, ConcatSignal, instance, bl
 from hdmi.models import DecoderModel
 
 
-class HDMIRxModel:
+class HDMIRxModel(object):
 
     def __init__(self, video_interface, aux_interface, hdmi_interface):
 

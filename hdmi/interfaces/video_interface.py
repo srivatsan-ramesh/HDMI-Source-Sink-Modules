@@ -1,7 +1,7 @@
 from myhdl import Signal, intbv
 
 
-class VideoInterface:
+class VideoInterface(object):
 
     def __init__(self, clock, resolution=(640, 480), color_depth=(8, 8, 8)):
 

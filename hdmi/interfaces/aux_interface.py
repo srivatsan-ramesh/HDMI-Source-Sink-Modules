@@ -1,7 +1,7 @@
 from myhdl import Signal, intbv
 
 
-class AuxInterface:
+class AuxInterface(object):
 
     def __init__(self, clock, aux_depth=(4, 4, 4)):
 

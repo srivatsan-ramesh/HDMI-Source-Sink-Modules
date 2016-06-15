@@ -1,7 +1,7 @@
 from myhdl import Signal
 
 
-class HDMIInterface:
+class HDMIInterface(object):
 
     def __init__(self, clock5x, clock5x_not):
 
@@ -34,19 +34,6 @@ class HDMIInterface:
 
         self.TMDS_CLK_P = Signal(bool(0))
         self.TMDS_CLK_N = Signal(bool(0))
-
-    def _print_data(self):
-
-        """
-
-        An utility function that prints the current signal values
-
-        """
-
-        print('R+ : {} , R- : {}'.format(self.TMDS_R_P, self.TMDS_R_N))
-        print('G+ : {} , G- : {}'.format(self.TMDS_G_P, self.TMDS_G_N))
-        print('B+ : {} , B- : {}'.format(self.TMDS_B_P, self.TMDS_B_N))
-        print('CLK+ : {} , CLK- : {}'.format(self.TMDS_CLK_P, self.TMDS_CLK_N))
 
     def write_data(self, TMDS_R, TMDS_G, TMDS_B, TMDS_CLK):
 
