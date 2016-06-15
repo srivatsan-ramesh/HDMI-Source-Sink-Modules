@@ -9,21 +9,22 @@ class DecoderModel(object):
                  c1, vde, ade, video_out, audio_out, channel='BLUE'):
 
         """
+
          A non-convertible HDMI Decoder Model which decodes the TMDS data and outputs the video and aux data.
          This is modelled after the xapp495 decoder module.
 
         Args:
-            :param clock: The system clock or the pixel clock
-            :param data_in: The TMDS data (10 bits width) to be decoded
-            :param video_preamble: signal to detect the video preamble in the input data
-            :param data_island_preamble: signal to detect the data island preamble in the input data
-            :param c0: Control signal (hsync for Blue channel)
-            :param c1: Control signal (vsync for Blue channel)
-            :param vde: Video Data enable
-            :param ade: Audio data enable
-            :param video_out: Output video data
-            :param audio_out: Output audio (or aux) data.
-            :param channel: Color of the channel ('RED', 'GREEN' or 'BLUE'). Default value is 'BLUE'
+            clock: The system clock or the pixel clock
+            data_in: The TMDS data (10 bits width) to be decoded
+            video_preamble: signal to detect the video preamble in the input data
+            data_island_preamble: signal to detect the data island preamble in the input data
+            c0: Control signal (hsync for Blue channel)
+            c1: Control signal (vsync for Blue channel)
+            vde: Video Data enable
+            ade: Audio data enable
+            video_out: Output video data
+            audio_out: Output audio (or aux) data.
+            channel: Color of the channel ('RED', 'GREEN' or 'BLUE'). Default value is 'BLUE'
 
         Usage:
             decoder_model = DecoderModel(*params)
@@ -47,8 +48,12 @@ class DecoderModel(object):
     def write_data(self, data_in):
 
         """
+
         Writes the given data onto the input data signal
-        :param data_in: 10 bit intbv value(or a 10 bit integer)
+
+        Args:
+            data_in: 10 bit intbv value(or a 10 bit integer)
+
         """
 
         self.data_in.next = data_in
@@ -64,6 +69,7 @@ class DecoderModel(object):
         Usage:
             process_inst = decoder_model.process()
             process_inst.run_sim()
+
         """
 
         # Control signals
