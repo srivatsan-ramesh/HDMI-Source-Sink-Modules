@@ -21,7 +21,7 @@ def test_video_interface():
     def test():
 
         video_interface.reset_cursor()
-        video_interface.enable_video()
+        yield video_interface.enable_video()
 
         # iterating over the frame
         for _ in range(res[0]*res[1]):
@@ -30,7 +30,7 @@ def test_video_interface():
                 video_interface.read_pixel()
             assert video_interface.get_pixel() == pixel
 
-        video_interface.disable_video()
+        yield video_interface.disable_video()
 
     return clock_drive, test
 

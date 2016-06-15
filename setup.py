@@ -21,7 +21,7 @@ except ImportError:
 
 setup(name='hdmi',
       version=hdmi.__version__,
-      install_requires=['myhdl'],
+      install_requires=['myhdl >= 1.0.dev0'],
       description='Implementation of HDMI Source/Sink Modules in MyHDL',
       url='https://github.com/srivatsan-ramesh/HDMI-Source-Sink-Modules',
       author='srivatsan-ramesh',

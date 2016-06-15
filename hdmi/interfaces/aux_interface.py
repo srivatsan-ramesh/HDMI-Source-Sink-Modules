@@ -1,17 +1,18 @@
 from myhdl import Signal, intbv
 
 
-class AuxInterface:
+class AuxInterface(object):
 
     def __init__(self, clock, aux_depth=(4, 4, 4)):
 
         """
+
          This interface is the internal interface modeled after
          the xapp495 internal audio interface
 
          Args:
-             :param clock: pixel clock.
-             :param aux_depth (optional): The bus width of the aux interface
+             clock: pixel clock.
+             aux_depth (optional): The bus width of the aux interface
                                           Default value: (4, 4, 4)
 
         Usage:
@@ -33,12 +34,13 @@ class AuxInterface:
     def write_aux(self, aux0, aux1, aux2):
 
         """
+
          Transactor for passing signals to audio interface
 
          Args:
-             :param aux2: The auxiliary data(usually audio data)
-             :param aux1: The auxiliary data(usually audio data)
-             :param aux0: The auxiliary data(usually audio data)
+             aux0: The auxiliary data(usually audio data)
+             aux1: The auxiliary data(usually audio data)
+             aux2: The auxiliary data(usually audio data)
 
          Usage:
             # Values passed should be non negative integers less than 2**aux_depth[i]
@@ -62,23 +64,43 @@ class AuxInterface:
     def get_aux_data(self):
 
         """
-        :return: A tuple of aux signal values
+
+        Returns:
+            A tuple of aux signal values
+
         """
 
-        return self.aux0, self.aux1, self.aux2
+        return self.aux0.val[:], self.aux1.val[:], self.aux2.val[:]
 
     def enable_aux(self):
 
         """
+
         Makes the ADE signal 1
+
         """
 
-        self.ade = Signal(bool(1))
+        self.ade.next = 1
+        yield self.clock.posedge
 
     def disable_aux(self):
 
         """
+
         Makes the ADE signal 0
+
         """
 
-        self.ade = Signal(bool(0))
+        self.ade.next = 0
+        yield self.clock.posedge
+
+    def get_ade(self):
+
+        """
+
+        Returns:
+            ADE signal value
+
+        """
+
+        return self.ade.val

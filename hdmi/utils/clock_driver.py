@@ -1,6 +1,7 @@
-from myhdl import delay, always
+from myhdl import delay, always, block
 
 
+@block
 def clock_driver(clock, d=1):
 
     half_period = delay(d)
