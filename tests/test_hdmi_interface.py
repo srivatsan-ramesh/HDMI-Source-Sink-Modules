@@ -7,11 +7,13 @@ from hdmi.utils import clock_driver
 
 def test_hdmi_interface():
 
-    clock = Signal(bool(0))
+    clock5x = Signal(bool(0))
+    clock5x_not = Signal(bool(0))
 
-    clk_drive = clock_driver(clock)
+    clk_drive = clock_driver(clock5x)
+    clk_drive_not = clock_driver(clock5x_not)
 
-    hdmi_interface = HDMIInterface(clock)
+    hdmi_interface = HDMIInterface(clock5x, clock5x_not)
 
     @instance
     def test():
@@ -23,7 +25,7 @@ def test_hdmi_interface():
                   hdmi_interface.read_data()
             assert hdmi_interface.get_TMDS_data() == TMDS_data
 
-    return clk_drive, test
+    return clk_drive, clk_drive_not, test
 
 test_instance = test_hdmi_interface()
 
