@@ -5,7 +5,7 @@ from hdmi.models import EncoderModel
 
 class HDMITxModel(object):
 
-    def __init__(self, clock, clock5x, clock5x_not, reset, video_interface, aux_interface, hdmi_interface):
+    def __init__(self, clock, reset, video_interface, aux_interface, hdmi_interface):
 
         """
 
@@ -14,8 +14,6 @@ class HDMITxModel(object):
 
         Args:
             clock: System clock or the pixel clock
-            clock5x: clock with frequency 5 times that of pixel clock
-            clock5x_not: clock with five times the frequency of pixel clock and phase shifted ny 180 degrees
             reset: Reset signal
             video_interface: An instance of the VideoInterface class
             aux_interface: An instance of the AUXInterface class
@@ -29,8 +27,6 @@ class HDMITxModel(object):
         """
 
         self.clock = clock
-        self.clock5x = clock5x
-        self.clock5x_not = clock5x_not
         self.reset = reset
         self.video_interface = video_interface
         self.aux_interface = aux_interface

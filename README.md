@@ -51,13 +51,13 @@ To initialize the interfaces -
     
   >> video_interface_tx = VideoInterface(clock)
   >> aux_interface_tx = AuxInterface(clock)
-  >> hdmi_interface_tx = HDMIInterface(clock5x, clock5x_not)
+  >> hdmi_interface_tx = HDMIInterface(clock10x)
   
     # Interfaces for Rx Model
     
   >> video_interface_rx = VideoInterface(clock)
   >> aux_interface_rx = AuxInterface(clock)
-  >> hdmi_interface_rx = HDMIInterface(clock5x, clock5x_not)
+  >> hdmi_interface_rx = HDMIInterface(clock10x)
 ```
 
 Here the two signals clock signals are driven by the clock_driver() block.
@@ -66,12 +66,12 @@ Here the two signals clock signals are driven by the clock_driver() block.
   >> driver = clock_driver(clock)
 ```
 
-The 'clock5x' signal should have a frequency 5 times that of clock signal, while 'clock5x_not' is a 180 degree phase shifted version of 'clock5x' signal
+The 'clock10x' signal should have a frequency 10 times that of clock signal.
 
 The models can be initialized as -
 
 ```
-  >> hdmi_tx_model = HDMITxModel(clock, clock5x, clock5x_not, reset,
+  >> hdmi_tx_model = HDMITxModel(clock, reset,
                                 video_interface_tx, aux_interface_tx, hdmi_interface_tx)
   >> hdmi_rx_model = HDMIRxModel(video_interface_rx, aux_interface_rx, hdmi_interface_rx)
 ```
