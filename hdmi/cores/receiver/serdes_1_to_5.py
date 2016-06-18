@@ -1,4 +1,4 @@
-from myhdl import block, Signal, modbv, intbv, always, instance
+from myhdl import block, instance
 
 
 @block
@@ -12,7 +12,6 @@ def serdes_1_to_5(use_phase_detector, data_in_p, data_in_n, rx_io_clock,
     def deserialize():
         while True:
             yield rx_io_clock.posedge
-            # print('rx : ', self.hdmi_interface.get_TMDS_data(), now())
             data.append('1' if data_in_p else '0')
             data.pop(0)
 

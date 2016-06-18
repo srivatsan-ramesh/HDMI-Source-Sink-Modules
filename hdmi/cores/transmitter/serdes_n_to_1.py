@@ -5,11 +5,16 @@ count = 0
 
 @block
 def serdes_n_to_1(io_clock, serdes_strobe, reset, g_clock, data_in, iob_data_out, factor=8):
-
     global count
+
     @instance
     def serialize():
         i = 0
+
+        yield g_clock.posedge
+        iob_data_out.next = data_in[i]
+        i += 1
+
         while True:
             yield io_clock.posedge, reset.posedge
             if reset:
@@ -23,6 +28,7 @@ def serdes_n_to_1(io_clock, serdes_strobe, reset, g_clock, data_in, iob_data_out
 
     count += 1
     return serialize
+
 
 serdes_n_to_1.verilog_code = """
 

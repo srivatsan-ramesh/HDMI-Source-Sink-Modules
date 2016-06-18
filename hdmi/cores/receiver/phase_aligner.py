@@ -1,4 +1,4 @@
-from myhdl import block, always, Signal, modbv, ConcatSignal, intbv, always_comb, instances
+from myhdl import block, always, Signal, modbv, concat, intbv, always_comb, instances
 
 INIT = 1
 SEARCH = 2
@@ -46,7 +46,7 @@ def phase_aligner(reset, clock, s_data, bit_slip, flip_gear, phase_aligned):
 
     @always(clock.posedge)
     def search_time_out():
-        ctrl_tkn_search_tout.next = ctrl_tkn_search_timer == ConcatSignal([True for _ in range(search_timer_width)])
+        ctrl_tkn_search_tout.next = ctrl_tkn_search_timer == concat(*[True for _ in range(search_timer_width)])
 
     ctrl_tkn_event_timer = Signal(modbv(0)[ctrl_tkn_counter_width:])
     ctrl_tkn_event_reset = Signal(False)
@@ -62,7 +62,7 @@ def phase_aligner(reset, clock, s_data, bit_slip, flip_gear, phase_aligned):
 
     @always(clock.posedge)
     def event_time_out():
-        ctrl_tkn_event_tout.next = ctrl_tkn_event_timer == ConcatSignal([True for _ in range(ctrl_tkn_counter_width)])
+        ctrl_tkn_event_tout.next = ctrl_tkn_event_timer == concat(*[True for _ in range(ctrl_tkn_counter_width)])
 
     # Below starts the phase alignment state machine
     curr_state = Signal(intbv(1)[nSTATES:])
@@ -94,7 +94,7 @@ def phase_aligner(reset, clock, s_data, bit_slip, flip_gear, phase_aligned):
             else:
                 next_state.next = SEARCH
         elif curr_state == BLANK_PERIOD:
-            if blank_period_counter == ConcatSignal([True for _ in range(blank_period_counter_width)]):
+            if blank_period_counter == concat(*[True for _ in range(blank_period_counter_width)]):
                 next_state.next = PHASE_ALIGNED
             else:
                 next_state.next = SEARCH

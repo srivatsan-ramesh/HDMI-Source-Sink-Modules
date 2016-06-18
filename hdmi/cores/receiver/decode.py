@@ -1,6 +1,6 @@
-from myhdl import block, Signal, always, always_comb, intbv, ConcatSignal
+from myhdl import block, Signal, always, always_comb, intbv, ConcatSignal, instances
 
-from hdmi.cores.receiver import serdes_1_to_5, phase_aligner, channel_bonding
+from hdmi.cores.receiver import phase_aligner, channel_bonding, serdes_1_to_5
 
 
 @block
@@ -43,17 +43,15 @@ def decode(reset, p_clock, p_clockx2, p_clockx10, serdes_strobe, data_in_p, data
         _bit_slip.next = bit_slip
         bit_slipx2.next = bit_slip and not _bit_slip
 
-    des_0 = serdes_1_to_5(Signal(True), data_in_p, data_in_n, p_clockx10,
+    des_0 = serdes_1_to_5.serdes_1_to_5(Signal(True), data_in_p, data_in_n, p_clockx10,
                           serdes_strobe, reset, p_clockx2, bit_slipx2, raw_5_bit)
 
-    phase_aligner_0 = phase_aligner(reset, p_clock, raw_data, bit_slip, flip_gear, i_am_valid)
+    phase_aligner_0 = phase_aligner.phase_aligner(reset, p_clock, raw_data, bit_slip, flip_gear, i_am_valid)
 
-    @always_comb
-    def align_error():
-        phase_align_err.next = 0
+    phase_align_err.next = 0
 
     data_in = Signal(intbv(0)[10:0])
-    channel_bond = channel_bonding(p_clock, raw_data, i_am_valid, other_ch0_valid, other_ch1_valid,
+    channel_bond = channel_bonding.channel_bonding(p_clock, raw_data, i_am_valid, other_ch0_valid, other_ch1_valid,
                                    other_ch0_ready, other_ch1_ready, i_am_ready, data_in)
 
     control_token = [852,  # 00
@@ -218,5 +216,4 @@ def decode(reset, p_clock, p_clockx2, p_clockx10, serdes_strobe, data_in_p, data
 
             s_data_out.next = data_in
 
-    return assign_flip_gear, toggle_toggle, assign_toggle, make_10bit, bitslip, align_error, \
-           des_0, phase_aligner_0, channel_bond, continuous_assignment, sequential_logic
+    return instances()

@@ -1,9 +1,10 @@
-from myhdl import Signal, intbv, always_seq, always, always_comb, ConcatSignal
+from myhdl import Signal, intbv, always_seq, always, always_comb, ConcatSignal, block, instances
 
 from hdmi.cores.transmitter import serdes_n_to_1, encode, convert_30_to_15
 
 
-def hdmi_encoder(p_clock, p_clockx2, p_clockx10, serdes_strobe, reset,
+@block
+def hdmi_encoder(p_clock, p_clockx2, p_clockx10, reset, serdes_strobe,
                  video_interface, aux_interface, hdmi_interface):
 
     control0, control1, control2, control3 = [Signal(bool(0)) for _ in range(4)]
@@ -11,9 +12,9 @@ def hdmi_encoder(p_clock, p_clockx2, p_clockx10, serdes_strobe, reset,
     @always_comb
     def assign_control():
 
-        if video_interface.vde: # video_preamble
+        if video_interface.vde:     # video_preamble
             control0.next, control1.next, control2.next, control3.next = 1, 0, 0, 0
-        elif aux_interface.ade: # data_island_preamble
+        elif aux_interface.ade:     # data_island_preamble
             control0.next, control1.next, control2.next, control3.next = 1, 0, 1, 0
         else:   # null_control
             control0.next, control1.next, control2.next, control3.next = 0, 0, 0, 0
@@ -39,13 +40,11 @@ def hdmi_encoder(p_clock, p_clockx2, p_clockx10, serdes_strobe, reset,
     def init_tmds_clock():
 
         if toggle:
-            tmds_clock_init.next = 31 # int('11111', 2)
+            tmds_clock_init.next = 31   # int('11111', 2)
         else:
             tmds_clock_init.next = 0
 
-    tmds_clock = Signal(bool(0))
-
-    clock_out = serdes_n_to_1(p_clockx10, serdes_strobe, reset, p_clockx2, tmds_clock_init, tmds_clock, 5)
+    clock_out = serdes_n_to_1(p_clockx10, serdes_strobe, reset, p_clockx2, tmds_clock_init, tmds_init3, 5)
     oserdes0 = serdes_n_to_1(p_clockx10, serdes_strobe, reset, p_clockx2, tmds_data0, tmds_init0, 5)
     oserdes1 = serdes_n_to_1(p_clockx10, serdes_strobe, reset, p_clockx2, tmds_data1, tmds_init1, 5)
     oserdes2 = serdes_n_to_1(p_clockx10, serdes_strobe, reset, p_clockx2, tmds_data2, tmds_init2, 5)
@@ -68,12 +67,9 @@ def hdmi_encoder(p_clock, p_clockx2, p_clockx10, serdes_strobe, reset,
     encode_r = encode(p_clock, reset, video_interface.red, aux_interface.aux2, control2,
                       control3, video_interface.vde, aux_interface.ade, red, 'RED')
 
-    s_data = Signal(intbv(0)[30:0])
-    s_data = ConcatSignal(red[10:5], green[10:5], blue[10:5],
-                          red[5:0], green[5:0], blue[5:0])
+    s_data = ConcatSignal(red(10, 5), green(10, 5), blue(10, 5),
+                          red(5, 0), green(5, 0), blue(5,0))
 
     pixel2x = convert_30_to_15(reset, p_clock, p_clockx2, s_data, tmds_data2, tmds_data1, tmds_data0)
 
-    return assign_control, toggle_toggle, init_tmds_clock, \
-           clock_out, oserdes0, oserdes1, oserdes2, \
-           OBUFDS, encode_b,encode_g, encode_r, pixel2x
+    return instances()

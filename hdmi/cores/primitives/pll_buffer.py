@@ -15,15 +15,13 @@ def pll_buffer(pll_in, g_clock, locked, io_clock, serdes_strobe, lock, divide=5)
     @instance
     def assign_strobe():
         lock.next = 1
+        yield pll_in.posedge
         while True:
-            for _ in range(divide):
-                yield pll_in
+            for _ in range(divide - 1):
+                yield pll_in.posedge
             serdes_strobe.next = 1
-            yield pll_in
-            yield pll_in
+            yield pll_in.posedge
             serdes_strobe.next = 0
-            for _ in range(divide-2):
-                yield pll_in
 
     inst_count += 1
     return assign_io_clock, assign_strobe

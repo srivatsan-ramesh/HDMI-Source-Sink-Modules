@@ -1,21 +1,24 @@
-from myhdl import block, Signal, ConcatSignal, always_comb, always
+from myhdl import block, Signal, concat, always_comb, always, intbv, instances, ConcatSignal
 
 from hdmi.cores.primitives import buffer_ds, buffer_io, buffer, pll_clock_generator, pll_buffer
 from hdmi.cores.receiver import decode
 
 
 @block
-def hdmi_decoder(hdmi_interface, ext_reset, reset, p_clock, p_clockx2, p_clockx10,
-                 pll_clock_0, pll_clock_1, pll_clock_2, pll_locked, serdes_strobe, tmds_clock,
-                 blue_valid, green_valid, red_valid, blue_ready, green_ready, red_ready,
-                 video_interface, aux_interface, s_data_out, phase_align_err):
+def hdmi_decoder(ext_reset, hdmi_interface, video_interface, aux_interface):
 
-    s_data_out_red, s_data_out_green, s_data_out_blue = [Signal(False) for _ in range(3)]
+    p_clock, p_clockx2, p_clockx10, pll_clock_0, pll_clock_1, pll_clock_2, \
+        pll_locked, serdes_strobe, tmds_clock, blue_valid, green_valid, red_valid, \
+        blue_ready, green_ready, red_ready, phase_align_err, reset = [Signal(False) for _ in range(17)]
+
+    s_data_out = Signal(intbv(0)[30:0])
+
+    s_data_out_red, s_data_out_green, s_data_out_blue = [Signal(intbv(0)[10:0]) for _ in range(3)]
 
     @always_comb
     def data_out():
-        s_data_out.next = ConcatSignal(s_data_out_red[10:5], s_data_out_green[10:5], s_data_out_blue[10:5],
-                                       s_data_out_red[5:0], s_data_out_green[5:0], s_data_out_blue[5:0])
+        s_data_out.next = concat(s_data_out_red[10:5], s_data_out_green[10:5], s_data_out_blue[10:5],
+                                 s_data_out_red[5:0], s_data_out_green[5:0], s_data_out_blue[5:0])
 
     vde_r, vde_g, vde_b, ade_r, ade_g, ade_b = [Signal(False) for _ in range(6)]
 
@@ -83,6 +86,4 @@ def hdmi_decoder(hdmi_interface, ext_reset, reset, p_clock, p_clockx2, p_clockx1
     def phase_error():
         phase_align_err.next = red_phase_align_err or green_phase_align_err or blue_phase_align_err
 
-    return data_out, assign_de, assign_sync, assign_preamble, ibuf_rx_clock, \
-        bufio_tmds_clock, tmds_clock_bufg, pll_iserdes, p_clock_bufg, p_clockx2_bufg, \
-        io_clock_buf, assign_reset, decode_b, decode_g, decode_r, phase_error
+    return instances()

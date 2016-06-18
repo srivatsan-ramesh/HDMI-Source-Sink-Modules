@@ -1,13 +1,13 @@
 from myhdl import Signal, intbv, always, always_comb, block
 
-from hdmi.cores.common import DRAM16XN
+from hdmi.cores.primitives import DRAM16XN
 
 
 @block
 def convert_30_to_15(reset, clock, clockx2, data_in, tmds_data2, tmds_data1, tmds_data0):
 
     # RAM Address
-    write_addr, _write_addr, read_addr, _read_addr = [Signal(intbv(0)[4:0]) for _ in range(3)]
+    write_addr, _write_addr, read_addr, _read_addr = [Signal(intbv(0)[4:0]) for _ in range(4)]
 
     data_int = Signal(intbv(0)[30:0])
 
@@ -86,6 +86,6 @@ def convert_30_to_15(reset, clock, clockx2, data_in, tmds_data2, tmds_data1, tmd
         reset_p.next = _reset_sync
         tmds_data0.next = mux[5:0]
         tmds_data1.next = mux[10:5]
-        tmds_data2.next = mux[15:5]
+        tmds_data2.next = mux[15:10]
 
     return fd, fdc, fde, fdp, fdr, fdre, mux_logic, fifo_u

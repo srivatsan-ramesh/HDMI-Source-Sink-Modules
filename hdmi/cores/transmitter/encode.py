@@ -1,4 +1,4 @@
-from myhdl import block, Signal, intbv, always, ConcatSignal, always_seq, instances
+from myhdl import block, Signal, intbv, always, ConcatSignal, always_seq, instances, modbv
 
 
 @block
@@ -31,7 +31,7 @@ def encode(clock, reset, video_in, audio_in, c0, c1, vde, ade, data_out, channel
     no_of_ones_q_m = Signal(intbv(0)[4:])
     no_of_zeros_q_m = Signal(intbv(0)[4:])
 
-    count = Signal(intbv(0)[5:0])
+    count = Signal(modbv(0)[5:0])
 
     # delayed versions of vde signal
     _vde, __vde = [Signal(bool(0)) for _ in range(2)]
@@ -67,7 +67,7 @@ def encode(clock, reset, video_in, audio_in, c0, c1, vde, ade, data_out, channel
             no_of_ones_video_in.next += video_in[i]
         _video_in.next = video_in
         no_of_ones_q_m.next = 0
-        for i in range(9):
+        for i in range(8):
             no_of_ones_q_m.next += q_m[i]
         no_of_zeros_q_m.next = 8 - no_of_ones_q_m.next
 

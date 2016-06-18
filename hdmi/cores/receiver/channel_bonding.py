@@ -1,6 +1,6 @@
 from myhdl import block, Signal, always_comb, intbv, always, modbv
 
-from hdmi.cores.common import DRAM16XN
+from hdmi.cores.primitives import DRAM16XN
 
 
 @block

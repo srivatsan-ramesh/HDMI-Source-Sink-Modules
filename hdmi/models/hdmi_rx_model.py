@@ -1,4 +1,4 @@
-from myhdl import Signal, always_comb, intbv, always, ConcatSignal, instance, block
+from myhdl import Signal, always_comb, intbv, always, ConcatSignal, instance, block, instances
 
 from hdmi.models import DecoderModel
 
@@ -110,5 +110,4 @@ class HDMIRxModel(object):
                       green_decoder.write_data(int(''.join(green_list[::-1]), 2)), \
                       blue_decoder.write_data(int(''.join(blue_list[::-1]), 2))
 
-        return continuous_assignment, sequential, assign, deserialize, \
-            red_decoder_inst, green_decoder_inst, blue_decoder_inst
+        return instances()

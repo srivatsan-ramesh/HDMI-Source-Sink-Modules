@@ -1,4 +1,4 @@
-from myhdl import Signal, always, intbv, instance, block, delay
+from myhdl import Signal, always, intbv, instance, block, delay, instances
 
 from hdmi.models import EncoderModel
 
@@ -141,5 +141,4 @@ class HDMITxModel(object):
                                                          blue_data_out[i],
                                                          self.clock)
 
-        return serial_delay, serialize, \
-            blue_encoder_inst, green_encoder_inst, red_encoder_inst
+        return instances()
