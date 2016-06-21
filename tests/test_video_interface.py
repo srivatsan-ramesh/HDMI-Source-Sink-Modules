@@ -1,4 +1,4 @@
-from myhdl import Signal, Simulation, instance
+from myhdl import Signal, Simulation, instance, instances
 
 from hdmi.interfaces import VideoInterface
 from hdmi.utils import clock_driver
@@ -32,7 +32,7 @@ def test_video_interface():
 
         yield video_interface.disable_video()
 
-    return clock_drive, test
+    return instances()
 
 test_inst = test_video_interface()
 

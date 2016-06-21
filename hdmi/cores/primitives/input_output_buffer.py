@@ -4,13 +4,13 @@ inst_count = 0
 
 
 @block
-def buffer_io(input, output):
+def buffer_io(inp, output):
 
     global inst_count
 
     @always_comb
     def BUFIO2_primitive():
-        output.next = input
+        output.next = inp
 
     inst_count += 1
 
@@ -18,5 +18,5 @@ def buffer_io(input, output):
 
 buffer_io.verilog_code = """
     BUFIO2 #(.DIVIDE_BYPASS("TRUE"), .DIVIDE(1))
-    bufio_$inst_count (.DIVCLK($output), .IOCLK(), .SERDESSTROBE(), .I($input));
+    bufio_$inst_count (.DIVCLK($output), .IOCLK(), .SERDESSTROBE(), .I($inp));
 """

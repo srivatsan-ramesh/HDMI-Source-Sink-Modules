@@ -4,13 +4,13 @@ from hdmi.cores.primitives import ram16x1d
 
 
 @block
-def DRAM16XN(data_in, address, address_dp, write_enable, clock,
+def dram16xn(data_in, address, address_dp, write_enable, clock,
              o_data_out, o_data_out_dp, data_width=30):
 
     ram16x1d_inst = ram16x1d(data_in, write_enable, clock, address, address_dp, o_data_out, o_data_out_dp, data_width)
     return ram16x1d_inst
 
-DRAM16XN.verilog_code = """
+dram16xn.verilog_code = """
 genvar i;
 generate
   for(i = 0 ; i < $data_width ; i = i + 1) begin : dram16s

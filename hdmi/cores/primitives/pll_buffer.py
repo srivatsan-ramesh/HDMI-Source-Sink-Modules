@@ -1,4 +1,4 @@
-from myhdl import block, always_comb, instance
+from myhdl import block, always_comb, instance, instances
 
 inst_count = 0
 
@@ -24,7 +24,7 @@ def pll_buffer(pll_in, g_clock, locked, io_clock, serdes_strobe, lock, divide=5)
             serdes_strobe.next = 0
 
     inst_count += 1
-    return assign_io_clock, assign_strobe
+    return instances()
 
 pll_buffer.verilog_code = """
     BUFPLL #(.DIVIDE($divide)) pll_buf_$inst_count (.PLLIN($pll_in), .GCLK($g_clock), .LOCKED($locked),

@@ -1,6 +1,6 @@
-from myhdl import block, Signal, always_comb, intbv, always, modbv
+from myhdl import block, Signal, always_comb, intbv, always, modbv, instances
 
-from hdmi.cores.primitives import DRAM16XN
+from hdmi.cores.primitives import dram16xn
 
 
 @block
@@ -30,7 +30,7 @@ def channel_bonding(clock, raw_data, i_am_valid, other_ch0_valid, other_ch1_vali
             write_addr.next = 0
 
     fo_data_out, fo_data_out_dp = [Signal(intbv(0)[10:0]) for _ in range(2)]
-    cbfifo_i = DRAM16XN(raw_data, write_addr, read_addr, write_enable, clock, fo_data_out, fo_data_out_dp, 10)
+    cbfifo_i = dram16xn(raw_data, write_addr, read_addr, write_enable, clock, fo_data_out, fo_data_out_dp, 10)
 
     @always(clock.posedge)
     def assign_data():
@@ -91,6 +91,4 @@ def channel_bonding(clock, raw_data, i_am_valid, other_ch0_valid, other_ch1_vali
         elif read_addr_enable:
             read_addr.next = read_addr + 1
 
-    return assign_raw_data, assign_write, cbfifo_i, assign_data, assign_control, \
-        skip_curr_line, assign_next_blank, readiness, assign_raw_data_validity, \
-        assign_enable, read_addr_counter
+    return instances()

@@ -1,5 +1,5 @@
 import itertools
-from myhdl import Signal, instance, Simulation
+from myhdl import Signal, instance, Simulation, instances
 
 from hdmi.interfaces import HDMIInterface
 from hdmi.utils import clock_driver
@@ -23,7 +23,7 @@ def test_hdmi_interface():
                   hdmi_interface.read_data()
             assert hdmi_interface.get_TMDS_data() == TMDS_data
 
-    return clk_drive, test
+    return instances()
 
 test_instance = test_hdmi_interface()
 

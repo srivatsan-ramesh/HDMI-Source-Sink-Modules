@@ -1,2 +1,6 @@
 ignore-patterns:
     - (^|/)__init__\.py$
+pylint:
+  disable:
+    - unused-variable
+    - unused-argument

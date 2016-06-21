@@ -1,6 +1,6 @@
-from myhdl import Signal, intbv, always, always_comb, block
+from myhdl import Signal, intbv, always, always_comb, block, instances
 
-from hdmi.cores.primitives import DRAM16XN
+from hdmi.cores.primitives import dram16xn
 
 
 @block
@@ -29,7 +29,7 @@ def convert_30_to_15(reset, clock, clockx2, data_in, tmds_data2, tmds_data1, tmd
             write_addr.next = _write_addr
 
     o_data_out = Signal(intbv(0)[30:0])     # Dummy variable
-    fifo_u = DRAM16XN(data_in, write_addr, read_addr, Signal(True), clock, o_data_out, data_int)
+    fifo_u = dram16xn(data_in, write_addr, read_addr, Signal(True), clock, o_data_out, data_int)
 
     @always(read_addr)
     def case_ra():
@@ -88,4 +88,4 @@ def convert_30_to_15(reset, clock, clockx2, data_in, tmds_data2, tmds_data1, tmd
         tmds_data1.next = mux[10:5]
         tmds_data2.next = mux[15:10]
 
-    return fd, fdc, fde, fdp, fdr, fdre, mux_logic, fifo_u
+    return instances()
