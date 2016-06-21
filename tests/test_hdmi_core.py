@@ -8,7 +8,7 @@ from hdmi.utils import clock_driver
 
 
 @block
-def test_hdmi_core():
+def test_hdmi_core_process():
     # Clock and reset signals
     clock, clock2x, clock10x, serdes_strobe = [Signal(bool(0)) for _ in range(4)]
     reset = ResetSignal(0, True, False)
@@ -117,6 +117,3 @@ def test_hdmi_core():
 
     return instances()
 
-
-t = test_hdmi_core()
-t.run_sim()

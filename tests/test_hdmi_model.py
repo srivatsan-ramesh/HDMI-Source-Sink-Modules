@@ -111,5 +111,4 @@ def test_hdmi_model():
 
 
 t = test_hdmi_model()
-t.config_sim(trace=True)
 t.run_sim()
