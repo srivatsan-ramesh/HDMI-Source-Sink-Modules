@@ -5,7 +5,7 @@ from hdmi.cores.primitives import DRAM16XN
 
 @block
 def channel_bonding(clock, raw_data, i_am_valid, other_ch0_valid, other_ch1_valid,
-                    other_ch0_ready, other_ch1_ready, i_am_ready, s_data):
+                    other_ch0_ready, other_ch1_ready, i_am_ready, s_data, simulation=True):
 
     control_token = [852,  # 00
                      171,  # 01
@@ -63,7 +63,10 @@ def channel_bonding(clock, raw_data, i_am_valid, other_ch0_valid, other_ch1_vali
     @always(clock.posedge)
     def readiness():
         if not raw_data_valid:
-            i_am_ready.next = 0
+            if simulation:
+                i_am_ready.next = 1
+            else:
+                i_am_ready.next = 0
         elif next_blank_begin:
             i_am_ready.next = 1
     _raw_data_valid, raw_data_valid_rising = [Signal(False) for _ in range(2)]

@@ -6,8 +6,8 @@ from hdmi.cores.receiver import phase_aligner, channel_bonding, serdes_1_to_5
 @block
 def decode(reset, p_clock, p_clockx2, p_clockx10, serdes_strobe, data_in_p, data_in_n,
            other_ch0_valid, other_ch1_valid, other_ch0_ready, other_ch1_ready,
-           video_preamble, data_island_preamble, i_am_ready, i_am_valid,
-           phase_align_err, c0, c1, vde, ade, s_data_out, video_out, audio_out, channel='BLUE'):
+           video_preamble, data_island_preamble, i_am_ready, i_am_valid, phase_align_err,
+           c0, c1, vde, ade, s_data_out, video_out, audio_out, channel='BLUE', simulation=True):
 
     flip_gear, flip_gearx2, toggle, rx_toggle = [Signal(bool(0)) for _ in range(4)]
 
@@ -46,13 +46,13 @@ def decode(reset, p_clock, p_clockx2, p_clockx10, serdes_strobe, data_in_p, data
     des_0 = serdes_1_to_5.serdes_1_to_5(Signal(True), data_in_p, data_in_n, p_clockx10,
                                         serdes_strobe, reset, p_clockx2, bit_slipx2, raw_5_bit)
 
-    phase_aligner_0 = phase_aligner.phase_aligner(reset, p_clock, raw_data, bit_slip, flip_gear, i_am_valid)
+    phase_aligner_0 = phase_aligner.phase_aligner(reset, p_clock, raw_data, bit_slip, flip_gear, i_am_valid, simulation)
 
     phase_align_err.next = 0
 
     data_in = Signal(intbv(0)[10:0])
     channel_bond = channel_bonding.channel_bonding(p_clock, raw_data, i_am_valid, other_ch0_valid, other_ch1_valid,
-                                                   other_ch0_ready, other_ch1_ready, i_am_ready, data_in)
+                                                   other_ch0_ready, other_ch1_ready, i_am_ready, data_in, simulation)
 
     control_token = [852,  # 00
                      171,  # 01
