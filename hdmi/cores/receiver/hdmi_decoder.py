@@ -5,7 +5,7 @@ from hdmi.cores.receiver import decode
 
 
 @block
-def hdmi_decoder(ext_reset, hdmi_interface, video_interface, aux_interface, simulation=True):
+def hdmi_decoder(ext_reset, hdmi_interface, video_interface, aux_interface):
 
     p_clock, p_clockx2, p_clockx10, pll_clock_0, pll_clock_1, pll_clock_2, \
         pll_locked, serdes_strobe, tmds_clock, blue_valid, green_valid, red_valid, \
@@ -68,19 +68,19 @@ def hdmi_decoder(ext_reset, hdmi_interface, video_interface, aux_interface, simu
                       hdmi_interface.TMDS_B_P, hdmi_interface.TMDS_B_N, green_valid, red_valid,
                       green_ready, red_ready, video_preamble, data_island_preamble, blue_ready, blue_valid,
                       blue_phase_align_err, blue_c0, blue_c1, vde_b, ade_b, s_data_out_blue,
-                      video_interface.blue, aux_interface.aux0, 'BLUE', simulation)
+                      video_interface.blue, aux_interface.aux0, 'BLUE')
 
     decode_g = decode(reset, p_clock, p_clockx2, p_clockx10, serdes_strobe,
                       hdmi_interface.TMDS_G_P, hdmi_interface.TMDS_G_N, blue_valid, red_valid,
                       blue_ready, red_ready, video_preamble, data_island_preamble, green_ready, green_valid,
                       green_phase_align_err, control0, control1, vde_g, ade_g, s_data_out_green,
-                      video_interface.green, aux_interface.aux1, 'GREEN', simulation)
+                      video_interface.green, aux_interface.aux1, 'GREEN')
 
     decode_r = decode(reset, p_clock, p_clockx2, p_clockx10, serdes_strobe,
                       hdmi_interface.TMDS_R_P, hdmi_interface.TMDS_R_N, blue_valid, green_valid,
                       blue_ready, green_ready, video_preamble, data_island_preamble, red_ready, red_valid,
                       red_phase_align_err, control2, control3, vde_r, ade_r, s_data_out_red,
-                      video_interface.red, aux_interface.aux2, 'RED', simulation)
+                      video_interface.red, aux_interface.aux2, 'RED')
 
     @always_comb
     def phase_error():

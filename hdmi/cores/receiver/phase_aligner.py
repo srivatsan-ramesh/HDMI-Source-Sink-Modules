@@ -10,7 +10,8 @@ nSTATES = 6
 
 
 @block
-def phase_aligner(reset, clock, s_data, bit_slip, flip_gear, phase_aligned, simulation=True):
+def phase_aligner(reset, clock, s_data, bit_slip, flip_gear, phase_aligned):
+
     control_token = [852,  # 00
                      171,  # 01
                      340,  # 10
@@ -125,11 +126,9 @@ def phase_aligner(reset, clock, s_data, bit_slip, flip_gear, phase_aligned, simu
                 ctrl_tkn_search_reset.next = 0
                 ctrl_tkn_event_reset.next = 1
                 bit_slip.next = 0
-                if simulation:
-                    phase_aligned.next = 1
-                else:
-                    phase_aligned.next = 0
                 bit_slip_counter.next = 0
+                if __debug__:
+                    phase_aligned.next = 1
                 flip_gear.next = 0
                 blank_period_counter.next = 0
 
@@ -137,10 +136,9 @@ def phase_aligner(reset, clock, s_data, bit_slip, flip_gear, phase_aligned, simu
                 ctrl_tkn_search_reset.next = 0
                 ctrl_tkn_event_reset.next = 1
                 bit_slip.next = 0
-                if simulation:
+                phase_aligned.next = 0
+                if __debug__:
                     phase_aligned.next = 1
-                else:
-                    phase_aligned.next = 0
 
             elif curr_state == BIT_SLIP:
                 ctrl_tkn_search_reset.next = 1
