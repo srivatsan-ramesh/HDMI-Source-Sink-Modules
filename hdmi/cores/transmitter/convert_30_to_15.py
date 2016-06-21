@@ -28,8 +28,8 @@ def convert_30_to_15(reset, clock, clockx2, data_in, tmds_data2, tmds_data1, tmd
         else:
             write_addr.next = _write_addr
 
-    o_data_out = Signal(intbv(0)[30:0]) # Dummy variable
-    fifo_u = DRAM16XN(data_in, write_addr, read_addr, Signal(1), clock, o_data_out, data_int)
+    o_data_out = Signal(intbv(0)[30:0])     # Dummy variable
+    fifo_u = DRAM16XN(data_in, write_addr, read_addr, Signal(True), clock, o_data_out, data_int)
 
     @always(read_addr)
     def case_ra():

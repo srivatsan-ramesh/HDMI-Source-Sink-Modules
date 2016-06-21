@@ -1,6 +1,6 @@
 import math
 
-from myhdl import always, Signal, intbv, ConcatSignal, always_seq, instances, block, modbv
+from myhdl import always, Signal, intbv, concat, always_seq, instances, block, modbv
 
 from hdmi.models.constants import CONTROL_TOKEN
 
@@ -68,7 +68,7 @@ class EncoderModel(object):
             'RED': int('0100110011', 2)
         }.get(self.channel, 0)
 
-        no_of_ones_video_in = Signal(intbv(0)[math.log(self.color_depth, 2):])
+        no_of_ones_video_in = Signal(intbv(0)[math.log(self.color_depth, 2) + 1:])
 
         decision1 = Signal(bool(0))
         decision2 = Signal(bool(0))
@@ -156,9 +156,9 @@ class EncoderModel(object):
 
                 ade_vld.next = self.ade | __ade | ____ade
                 if digb_period:
-                    audio_in_vld.next = ConcatSignal(bool(1), bool(1), __c1, __c0)
+                    audio_in_vld.next = concat(bool(1), bool(1), __c1, __c0)
                 else:
-                    audio_in_vld.next = ConcatSignal(__audio_in[3], __audio_in[2], __c1, __c0)
+                    audio_in_vld.next = concat(__audio_in[3], __audio_in[2], __c1, __c0)
 
             else:
 
@@ -188,12 +188,12 @@ class EncoderModel(object):
                     self.data_out.next[9] = True
                     self.data_out.next[8] = _q_m[8]
                     self.data_out.next[8:0] = ~_q_m[8:0]
-                    count.next = count - ConcatSignal(_q_m[8], bool(0)) + no_of_zeros_q_m - no_of_ones_q_m
+                    count.next = count - concat(_q_m[8], bool(0)) + no_of_zeros_q_m - no_of_ones_q_m
                 else:
                     self.data_out.next[9] = False
                     self.data_out.next[8] = _q_m[8]
                     self.data_out.next[8:0] = _q_m[8:0]
-                    count.next = count - ConcatSignal(not _q_m[8], bool(0)) + no_of_ones_q_m - no_of_zeros_q_m
+                    count.next = count - concat(not _q_m[8], bool(0)) + no_of_ones_q_m - no_of_zeros_q_m
             else:
                 if self.vde:
                     self.data_out.next = video_guard_band
@@ -218,7 +218,7 @@ class EncoderModel(object):
                 elif (self.ade | ____ade) and (self.channel != "BLUE"):
                     self.data_out.next = data_island_guard_band
                 else:
-                    concat_c = ConcatSignal(__c1, __c0)
+                    concat_c = concat(__c1, __c0)
                     self.data_out.next = CONTROL_TOKEN[concat_c]
 
                 count.next = 0

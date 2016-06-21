@@ -1,9 +1,8 @@
-from myhdl import block, Signal, intbv, always, ConcatSignal, always_seq, instances, modbv
+from myhdl import block, Signal, intbv, always, concat, always_seq, instances, modbv
 
 
 @block
 def encode(clock, reset, video_in, audio_in, c0, c1, vde, ade, data_out, channel='BLUE'):
-
     control_token = [852, 171, 340, 683]
 
     video_guard_band = 307
@@ -62,14 +61,13 @@ def encode(clock, reset, video_in, audio_in, c0, c1, vde, ade, data_out, channel
     @always(clock.posedge)
     def sequential_logic():
 
-        no_of_ones_video_in.next = 0
-        for i in range(8):
-            no_of_ones_video_in.next += video_in[i]
+        no_of_ones_video_in.next = video_in[0] + video_in[1] + video_in[2] + video_in[3] + \
+                                   video_in[4] + video_in[5] + video_in[6] + video_in[7]
         _video_in.next = video_in
-        no_of_ones_q_m.next = 0
-        for i in range(8):
-            no_of_ones_q_m.next += q_m[i]
-        no_of_zeros_q_m.next = 8 - no_of_ones_q_m.next
+        no_of_ones_q_m.next = (q_m[0] + q_m[1] + q_m[2] + q_m[3] + q_m[4] +
+                               q_m[5] + q_m[6] + q_m[7])
+        no_of_zeros_q_m.next = 8 - (q_m[0] + q_m[1] + q_m[2] + q_m[3] + q_m[4] +
+                                    q_m[5] + q_m[6] + q_m[7])
 
         _vde.next = vde
         __vde.next = _vde
@@ -96,7 +94,7 @@ def encode(clock, reset, video_in, audio_in, c0, c1, vde, ade, data_out, channel
         digb_period.next = (not __ade) and (____ade or ade)
 
         decision1.next = (no_of_ones_video_in > 4) or \
-                         (no_of_ones_video_in == 4 and _video_in[0] == False)
+                         (no_of_ones_video_in == 4 and not _video_in[0])
         decision2.next = (count == 0) | (no_of_zeros_q_m == no_of_ones_q_m)
         decision3.next = (not count[4]) & (no_of_ones_q_m > no_of_zeros_q_m) | \
                          (count[4]) & (no_of_ones_q_m < no_of_zeros_q_m)
@@ -105,9 +103,9 @@ def encode(clock, reset, video_in, audio_in, c0, c1, vde, ade, data_out, channel
 
             ade_vld.next = ade | __ade | ____ade
             if digb_period:
-                audio_in_vld.next = ConcatSignal(bool(1), bool(1), __c1, __c0)
+                audio_in_vld.next = concat(bool(1), bool(1), __c1, __c0)
             else:
-                audio_in_vld.next = ConcatSignal(__audio_in[3], __audio_in[2], __c1, __c0)
+                audio_in_vld.next = concat(__audio_in[3], __audio_in[2], __c1, __c0)
 
         else:
 
@@ -137,12 +135,12 @@ def encode(clock, reset, video_in, audio_in, c0, c1, vde, ade, data_out, channel
                 data_out.next[9] = True
                 data_out.next[8] = _q_m[8]
                 data_out.next[8:0] = ~_q_m[8:0]
-                count.next = count - ConcatSignal(_q_m[8], bool(0)) + no_of_zeros_q_m - no_of_ones_q_m
+                count.next = count - concat(_q_m[8], bool(0)) + no_of_zeros_q_m - no_of_ones_q_m
             else:
                 data_out.next[9] = False
                 data_out.next[8] = _q_m[8]
                 data_out.next[8:0] = _q_m[8:0]
-                count.next = count - ConcatSignal(not _q_m[8], bool(0)) + no_of_ones_q_m - no_of_zeros_q_m
+                count.next = count - concat(not _q_m[8], bool(0)) + no_of_ones_q_m - no_of_zeros_q_m
         else:
             if vde:
                 data_out.next = video_guard_band
@@ -153,7 +151,7 @@ def encode(clock, reset, video_in, audio_in, c0, c1, vde, ade, data_out, channel
             elif (ade | ____ade) and (channel != "BLUE"):
                 data_out.next = data_island_guard_band
             else:
-                concat_c = ConcatSignal(__c1, __c0)
+                concat_c = concat(__c1, __c0)
                 data_out.next = control_token[concat_c]
 
             count.next = 0

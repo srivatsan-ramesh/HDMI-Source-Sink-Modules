@@ -19,7 +19,7 @@ def serdes_1_to_5(use_phase_detector, data_in_p, data_in_n, rx_io_clock,
     def assign():
         while True:
             yield g_clock.posedge
-            data_out.next = int(''.join(data), 2)
+            data_out.next = int(''.join(data[::-1]), 2)
 
     return deserialize, assign
 

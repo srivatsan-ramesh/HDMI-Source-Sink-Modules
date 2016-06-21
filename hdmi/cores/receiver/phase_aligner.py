@@ -5,13 +5,12 @@ SEARCH = 2
 BIT_SLIP = 4
 RCVD_CTRL_TKN = 8  # Received control token
 BLANK_PERIOD = 16
-PHASE_ALIGNED = 32   # Phase Alignment Achieved
+PHASE_ALIGNED = 32  # Phase Alignment Achieved
 nSTATES = 6
 
 
 @block
 def phase_aligner(reset, clock, s_data, bit_slip, flip_gear, phase_aligned):
-
     control_token = [852,  # 00
                      171,  # 01
                      340,  # 10
@@ -22,7 +21,7 @@ def phase_aligner(reset, clock, s_data, bit_slip, flip_gear, phase_aligned):
     search_timer_width = 12
     blank_period_counter_width = 1
 
-    received_ctrl_token, _received_ctrl_token, blank_begin = [Signal(False)  for _ in range(3)]
+    received_ctrl_token, _received_ctrl_token, blank_begin = [Signal(False) for _ in range(3)]
 
     @always(clock.posedge)
     def assign_control():
@@ -46,7 +45,7 @@ def phase_aligner(reset, clock, s_data, bit_slip, flip_gear, phase_aligned):
 
     @always(clock.posedge)
     def search_time_out():
-        ctrl_tkn_search_tout.next = ctrl_tkn_search_timer == concat(*[True for _ in range(search_timer_width)])
+        ctrl_tkn_search_tout.next = (ctrl_tkn_search_timer == concat(*[True for _ in range(search_timer_width)]))
 
     ctrl_tkn_event_timer = Signal(modbv(0)[ctrl_tkn_counter_width:])
     ctrl_tkn_event_reset = Signal(False)
@@ -62,7 +61,7 @@ def phase_aligner(reset, clock, s_data, bit_slip, flip_gear, phase_aligned):
 
     @always(clock.posedge)
     def event_time_out():
-        ctrl_tkn_event_tout.next = ctrl_tkn_event_timer == concat(*[True for _ in range(ctrl_tkn_counter_width)])
+        ctrl_tkn_event_tout.next = (ctrl_tkn_event_timer == concat(*[True for _ in range(ctrl_tkn_counter_width)]))
 
     # Below starts the phase alignment state machine
     curr_state = Signal(intbv(1)[nSTATES:])
@@ -111,7 +110,6 @@ def phase_aligner(reset, clock, s_data, bit_slip, flip_gear, phase_aligned):
             bit_slip.next = 0
             ctrl_tkn_search_reset.next = 1
             ctrl_tkn_event_reset.next = 1
-            bit_slip.next = 0
             bit_slip_counter.next = 0
             flip_gear.next = 0
             blank_period_counter.next = 0
@@ -122,7 +120,6 @@ def phase_aligner(reset, clock, s_data, bit_slip, flip_gear, phase_aligned):
                 ctrl_tkn_event_reset.next = 1
                 bit_slip.next = 0
                 phase_aligned.next = 0
-                bit_slip.next = 0
                 bit_slip_counter.next = 0
                 flip_gear.next = 0
                 blank_period_counter.next = 0

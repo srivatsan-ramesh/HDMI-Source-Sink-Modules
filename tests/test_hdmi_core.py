@@ -76,13 +76,13 @@ def test_hdmi_core():
         Asserts whether the current output value and the input value before 16 clock cycles are equal
         """
 
-        for _ in range(16):
+        for _ in range(19):
             yield clock.posedge
         while True:
             yield delay(1)
             output_signal = get_signals()
             input_signal = input_signals.pop(0)
-            # assert input_signal == output_signal
+            assert input_signal == output_signal
             if len(input_signals) == 0:
                 raise StopSimulation
             yield clock.posedge
@@ -119,5 +119,4 @@ def test_hdmi_core():
 
 
 t = test_hdmi_core()
-t.config_sim(trace=True)
 t.run_sim()

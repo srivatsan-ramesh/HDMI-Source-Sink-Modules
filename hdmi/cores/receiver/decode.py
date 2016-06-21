@@ -1,4 +1,4 @@
-from myhdl import block, Signal, always, always_comb, intbv, ConcatSignal, instances
+from myhdl import block, Signal, always, always_comb, intbv, concat, instances
 
 from hdmi.cores.receiver import phase_aligner, channel_bonding, serdes_1_to_5
 
@@ -33,7 +33,7 @@ def decode(reset, p_clock, p_clockx2, p_clockx10, serdes_strobe, data_in_p, data
     def make_10bit():
         _raw_5_bit.next = raw_5_bit
         if rx_toggle:
-            raw_word.next = ConcatSignal(raw_5_bit, _raw_5_bit)
+            raw_word.next = concat(raw_5_bit, _raw_5_bit)
         raw_data.next = raw_word
 
     bit_slip, _bit_slip, bit_slipx2 = [Signal(bool(0)) for _ in range(3)]
@@ -44,7 +44,7 @@ def decode(reset, p_clock, p_clockx2, p_clockx10, serdes_strobe, data_in_p, data
         bit_slipx2.next = bit_slip and not _bit_slip
 
     des_0 = serdes_1_to_5.serdes_1_to_5(Signal(True), data_in_p, data_in_n, p_clockx10,
-                          serdes_strobe, reset, p_clockx2, bit_slipx2, raw_5_bit)
+                                        serdes_strobe, reset, p_clockx2, bit_slipx2, raw_5_bit)
 
     phase_aligner_0 = phase_aligner.phase_aligner(reset, p_clock, raw_data, bit_slip, flip_gear, i_am_valid)
 
@@ -52,7 +52,7 @@ def decode(reset, p_clock, p_clockx2, p_clockx10, serdes_strobe, data_in_p, data
 
     data_in = Signal(intbv(0)[10:0])
     channel_bond = channel_bonding.channel_bonding(p_clock, raw_data, i_am_valid, other_ch0_valid, other_ch1_valid,
-                                   other_ch0_ready, other_ch1_ready, i_am_ready, data_in)
+                                                   other_ch0_ready, other_ch1_ready, i_am_ready, data_in)
 
     control_token = [852,  # 00
                      171,  # 01
@@ -70,7 +70,7 @@ def decode(reset, p_clock, p_clockx2, p_clockx10, serdes_strobe, data_in_p, data
 
     @always_comb
     def continuous_assignment():
-        data.next = ~data_in[8:0] if data_in[9] == 1 else data_in[8:0]
+        data.next = ~data_in[8:0] if data_in[9] else data_in[8:0]
         control_end.next = (not control) & _control
 
     @always(p_clock.posedge)

@@ -1,4 +1,4 @@
-from myhdl import block, instance
+from myhdl import block, instance, delay
 
 count = 0
 
@@ -17,6 +17,7 @@ def serdes_n_to_1(io_clock, serdes_strobe, reset, g_clock, data_in, iob_data_out
 
         while True:
             yield io_clock.posedge, reset.posedge
+            yield delay(1)
             if reset:
                 iob_data_out.next = 0
                 i = 0
