@@ -1,10 +1,11 @@
 import itertools
-from myhdl import Signal, instance, Simulation, instances
+from myhdl import Signal, instance, block, instances
 
 from hdmi.interfaces import HDMIInterface
 from hdmi.utils import clock_driver
 
 
+@block
 def test_hdmi_interface():
 
     clock10x = Signal(bool(0))
@@ -26,7 +27,5 @@ def test_hdmi_interface():
     return instances()
 
 test_instance = test_hdmi_interface()
-
-sim = Simulation(test_instance)
-sim.run(16)
-sim.quit()
+test_instance.run_sim(16)
+test_instance.quit_sim()
