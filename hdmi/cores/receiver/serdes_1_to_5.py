@@ -25,40 +25,6 @@ def serdes_1_to_5(use_phase_detector, data_in_p, data_in_n, rx_io_clock,
 
 
 serdes_1_to_5.verilog_code = """
-  wire       ddly_m;
-  wire       ddly_s;
-  wire       busys;
-  wire       rx_data_in;
-  wire       cascade;
-  wire       pd_edge;
-  reg  [8:0] counter;
-  reg  [3:0] state;
-  reg        cal_data_sint;
-  wire       busy_data;
-  reg        busy_data_d;
-  wire       cal_data_slave;
-  reg        enable;
-  reg        cal_data_master;
-  reg        rst_data;
-  reg        inc_data_int;
-  wire       inc_data;
-  reg        ce_data;
-  reg        valid_data_d;
-  reg        incdec_data_d;
-  reg  [4:0] pdcounter;
-  wire       valid_data;
-  wire       incdec_data;
-  reg        flag;
-  reg        mux;
-  reg        ce_data_inta ;
-  wire [1:0] incdec_data_or;
-  wire       incdec_data_im;
-  wire [1:0] valid_data_or;
-  wire       valid_data_im;
-  wire [1:0] busy_data_or;
-  wire       all_ce;
-
-  wire [1:0] debug_in = 2'b00;
 
   assign busy_data = busys ;
 
@@ -350,7 +316,6 @@ ISERDES2 #(
   .SHIFTOUT         (pd_edge));
 
 
-reg [7:0] rxpdcntr = 8'h7f;
 always @ (posedge $g_clock or posedge $reset) begin
   if ($reset)
     rxpdcntr <= 8'h7f;

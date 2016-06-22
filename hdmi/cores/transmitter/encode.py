@@ -3,8 +3,9 @@ from myhdl import block, Signal, intbv, always, concat, always_seq, instances, m
 
 @block
 def encode(clock, reset, video_in, audio_in, c0, c1, vde, ade, data_out, channel='BLUE'):
-    control_token = [852, 171, 340, 683]
-
+    control_token = (852, 171, 340, 683)
+    terc4_encoding = (668, 611, 740, 738, 369, 286, 398, 316,
+                      716, 313, 412, 710, 654, 625, 355, 707)
     video_guard_band = 307
     data_island_guard_band = 307
     if channel == 'BLUE':
@@ -58,6 +59,8 @@ def encode(clock, reset, video_in, audio_in, c0, c1, vde, ade, data_out, channel
     audio_in_vld = Signal(intbv(0, min=audio_in.min,
                                 max=audio_in.max))
 
+    is_blue = True if channel == 'BLUE' else False
+
     @always(clock.posedge)
     def sequential_logic():
 
@@ -99,8 +102,7 @@ def encode(clock, reset, video_in, audio_in, c0, c1, vde, ade, data_out, channel
         decision3.next = (not count[4]) & (no_of_ones_q_m > no_of_zeros_q_m) | \
                          (count[4]) & (no_of_ones_q_m < no_of_zeros_q_m)
 
-        if channel == "BLUE":
-
+        if is_blue:
             ade_vld.next = ade | __ade | ____ade
             if digb_period:
                 audio_in_vld.next = concat(bool(1), bool(1), __c1, __c0)
@@ -108,16 +110,21 @@ def encode(clock, reset, video_in, audio_in, c0, c1, vde, ade, data_out, channel
                 audio_in_vld.next = concat(__audio_in[3], __audio_in[2], __c1, __c0)
 
         else:
-
             ade_vld.next = __ade
             audio_in_vld.next = __audio_in
 
         q_m.next[0] = _video_in[0]
         temp = _video_in[0]
-        for i in range(1, 8):
-            temp = (temp ^ (not _video_in[i] if decision1 else _video_in[i]))
-            q_m.next[i] = 1 if temp else 0
-        q_m.next[8] = 0 if decision1 else 1
+        if decision1:
+            for i in range(1, 8):
+                temp = temp ^ (not _video_in[i])
+                q_m.next[i] = 1 if temp else 0
+            q_m.next[8] = 0
+        else:
+            for i in range(1, 8):
+                temp = temp ^ _video_in[i]
+                q_m.next[i] = 1 if temp else 0
+            q_m.next[8] = 1
 
     @always_seq(clock.posedge, reset=reset)
     def output_logic():
@@ -145,39 +152,8 @@ def encode(clock, reset, video_in, audio_in, c0, c1, vde, ade, data_out, channel
             if vde:
                 data_out.next = video_guard_band
             elif ade_vld:
-                if audio_in_vld == 0:
-                    data_out.next = 668
-                elif audio_in_vld == 1:
-                    data_out.next = 611
-                elif audio_in_vld == 2:
-                    data_out.next = 740
-                elif audio_in_vld == 3:
-                    data_out.next = 738
-                elif audio_in_vld == 4:
-                    data_out.next = 369
-                elif audio_in_vld == 5:
-                    data_out.next = 286
-                elif audio_in_vld == 6:
-                    data_out.next = 398
-                elif audio_in_vld == 7:
-                    data_out.next = 316
-                elif audio_in_vld == 8:
-                    data_out.next = 716
-                elif audio_in_vld == 9:
-                    data_out.next = 313
-                elif audio_in_vld == 10:
-                    data_out.next = 412
-                elif audio_in_vld == 11:
-                    data_out.next = 710
-                elif audio_in_vld == 12:
-                    data_out.next = 654
-                elif audio_in_vld == 13:
-                    data_out.next = 625
-                elif audio_in_vld == 14:
-                    data_out.next = 355
-                elif audio_in_vld == 15:
-                    data_out.next = 707
-            elif (ade or ____ade) and (channel != "BLUE"):
+                data_out.next = terc4_encoding[audio_in_vld]
+            elif (ade or ____ade) and (not is_blue):
                 data_out.next = data_island_guard_band
             else:
                 concat_c = concat(__c1, __c0)

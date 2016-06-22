@@ -109,6 +109,5 @@ def test_hdmi_model():
 
     return instances()
 
-if __name__ == '__main__':
-    t = test_hdmi_model()
-    t.run_sim()
+t = test_hdmi_model()
+t.run_sim()

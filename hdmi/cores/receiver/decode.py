@@ -1,5 +1,6 @@
 from myhdl import block, Signal, always, always_comb, intbv, concat, instances
 
+from hdmi.cores import control_token_0, control_token_1, control_token_2, control_token_3
 from hdmi.cores.receiver import phase_aligner, channel_bonding, serdes_1_to_5
 
 
@@ -54,11 +55,6 @@ def decode(reset, p_clock, p_clockx2, p_clockx10, serdes_strobe, data_in_p, data
     channel_bond = channel_bonding.channel_bonding(p_clock, raw_data, i_am_valid, other_ch0_valid, other_ch1_valid,
                                                    other_ch0_ready, other_ch1_ready, i_am_ready, data_in)
 
-    control_token = [852,  # 00
-                     171,  # 01
-                     340,  # 10
-                     683]  # 11
-
     # Control signals
     control, _control, control_end = [Signal(bool(0)) for _ in range(3)]
 
@@ -67,6 +63,8 @@ def decode(reset, p_clock, p_clockx2, p_clockx10, serdes_strobe, data_in_p, data
     data_island_period = Signal(bool(0))
 
     data = Signal(intbv(0)[8:0])
+
+    is_blue = True if channel == 'BLUE' else False
 
     @always_comb
     def continuous_assignment():
@@ -88,28 +86,28 @@ def decode(reset, p_clock, p_clockx2, p_clockx10, serdes_strobe, data_in_p, data
             data_island_period.next = 1
 
         if i_am_ready and other_ch0_ready and other_ch1_ready:
-            if data_in == control_token[0]:
+            if data_in == control_token_0:
                 c0.next = 0
                 c1.next = 0
                 vde.next = 0
                 ade.next = 0
                 control.next = 1
 
-            elif data_in == control_token[1]:
+            elif data_in == control_token_1:
                 c0.next = 1
                 c1.next = 0
                 vde.next = 0
                 ade.next = 0
                 control.next = 1
 
-            elif data_in == control_token[2]:
+            elif data_in == control_token_2:
                 c0.next = 0
                 c1.next = 1
                 vde.next = 0
                 ade.next = 0
                 control.next = 1
 
-            elif data_in == control_token[3]:
+            elif data_in == control_token_3:
                 c0.next = 1
                 c1.next = 1
                 vde.next = 0
@@ -120,12 +118,14 @@ def decode(reset, p_clock, p_clockx2, p_clockx10, serdes_strobe, data_in_p, data
                 control.next = 0
                 if video_period:
                     video_out.next[0] = data[0]
-                    for i in range(1, 8):
-                        video_out.next[i] = data[i] ^ (data[i-1] if data_in[8] == 1 else not data[i-1])
+                    if data_in[8]:
+                        video_out.next[8:1] = data[8:1] ^ data[7:0]
+                    else:
+                        video_out.next[8:1] = data[8:1] ^ (~ data[7:0])
                     ade.next = 0
                     vde.next = 1
 
-                elif channel == 'BLUE' or data_island_period:
+                elif is_blue or data_island_period:
                     if data_in == 668:
                         audio_out.next = 0
                         ade.next = 1
@@ -167,7 +167,7 @@ def decode(reset, p_clock, p_clockx2, p_clockx10, serdes_strobe, data_in_p, data
                         vde.next = 0
 
                     elif data_in == 716:
-                        if channel == 'BLUE' and _control:
+                        if is_blue and _control:
                             ade.next = 0
                         else:
                             audio_out.next = 8

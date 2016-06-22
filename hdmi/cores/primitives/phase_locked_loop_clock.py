@@ -28,8 +28,8 @@ pll_clock_generator.verilog_code = """
     .CLKIN_PERIOD(10),
     .CLKFBOUT_MULT($clock_fb_out_mult),
     .CLKOUT0_DIVIDE($clock0_divide),
-    .CLKOUT1_DIVIDE($cock1_divide),
-    .CLKOUT2_DIVIDE($cock2_divide),
+    .CLKOUT1_DIVIDE($clock1_divide),
+    .CLKOUT2_DIVIDE($clock2_divide),
     .COMPENSATION("INTERNAL")
   ) PLL_$inst_count (
     .CLKFBOUT($clock_feedback_out),

@@ -62,11 +62,8 @@ def core_conversion_testbench():
     return instances()
 
 
-@pytest.mark.xfail
 def test_core_conversion():
     t = core_conversion_testbench()
-    assert t.verify_convert() == True
+    t.convert()
 
-
-if __name__ == '__main__':
-    test_core_conversion()
+test_core_conversion()

@@ -1,16 +1,12 @@
 from myhdl import block, Signal, always_comb, intbv, always, modbv, instances
 
+from hdmi.cores import control_token_0, control_token_1, control_token_2, control_token_3
 from hdmi.cores.primitives import dram16xn
 
 
 @block
 def channel_bonding(clock, raw_data, i_am_valid, other_ch0_valid, other_ch1_valid,
                     other_ch0_ready, other_ch1_ready, i_am_ready, s_data):
-
-    control_token = [852,  # 00
-                     171,  # 01
-                     340,  # 10
-                     683]  # 11
 
     raw_data_valid = Signal(False)
 
@@ -36,12 +32,12 @@ def channel_bonding(clock, raw_data, i_am_valid, other_ch0_valid, other_ch1_vali
     def assign_data():
         s_data.next = fo_data_out_dp
 
-    received_ctrl_token, _received_ctrl_token, blank_begin = [Signal(False)  for _ in range(3)]
+    received_ctrl_token, _received_ctrl_token, blank_begin = [Signal(False) for _ in range(3)]
 
     @always(clock.posedge)
     def assign_control():
-        received_ctrl_token.next = (s_data == control_token[0]) or (s_data == control_token[1]) \
-                                   or (s_data == control_token[2]) or (s_data == control_token[3])
+        received_ctrl_token.next = (s_data == control_token_0) or (s_data == control_token_1) \
+                                   or (s_data == control_token_2) or (s_data == control_token_3)
 
         _received_ctrl_token.next = received_ctrl_token
         blank_begin.next = not _received_ctrl_token and received_ctrl_token

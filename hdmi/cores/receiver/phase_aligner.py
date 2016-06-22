@@ -1,5 +1,7 @@
 from myhdl import block, always, Signal, modbv, concat, intbv, always_comb, instances
 
+from hdmi.cores import control_token_0, control_token_1, control_token_2, control_token_3
+
 INIT = 1
 SEARCH = 2
 BIT_SLIP = 4
@@ -11,10 +13,6 @@ nSTATES = 6
 
 @block
 def phase_aligner(reset, clock, s_data, bit_slip, flip_gear, phase_aligned):
-    control_token = [852,  # 00
-                     171,  # 01
-                     340,  # 10
-                     683]  # 11
 
     open_eye_counter_width = 3
     ctrl_tkn_counter_width = 7
@@ -25,8 +23,8 @@ def phase_aligner(reset, clock, s_data, bit_slip, flip_gear, phase_aligned):
 
     @always(clock.posedge)
     def assign_control():
-        received_ctrl_token.next = (s_data == control_token[0]) or (s_data == control_token[1]) \
-                                   or (s_data == control_token[2]) or (s_data == control_token[3])
+        received_ctrl_token.next = (s_data == control_token_0) or (s_data == control_token_1) \
+                                   or (s_data == control_token_2) or (s_data == control_token_3)
 
         _received_ctrl_token.next = received_ctrl_token
         blank_begin.next = not _received_ctrl_token and received_ctrl_token

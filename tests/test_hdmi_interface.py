@@ -26,7 +26,6 @@ def test_hdmi_interface():
 
     return instances()
 
-if __name__ == '__main__':
-    test_instance = test_hdmi_interface()
-    test_instance.run_sim(16)
-    test_instance.quit_sim()
+test_instance = test_hdmi_interface()
+test_instance.run_sim(16)
+test_instance.quit_sim()

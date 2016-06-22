@@ -11,13 +11,11 @@ def convert_30_to_15(reset, clock, clockx2, data_in, tmds_data2, tmds_data1, tmd
 
     data_int = Signal(intbv(0)[30:0])
 
-    address = range(6)
-
     @always(write_addr)
     def case_wa():
 
         if write_addr < 15:
-            _write_addr.next = address[write_addr] + 1
+            _write_addr.next = write_addr + 1
         else:
             _write_addr.next = 0
 
@@ -35,7 +33,7 @@ def convert_30_to_15(reset, clock, clockx2, data_in, tmds_data2, tmds_data1, tmd
     def case_ra():
 
         if read_addr < 15:
-            _read_addr.next = address[read_addr] + 1
+            _read_addr.next = read_addr + 1
         else:
             _read_addr.next = 0
 

@@ -33,25 +33,25 @@ def serdes_n_to_1(io_clock, serdes_strobe, reset, g_clock, data_in, iob_data_out
 
 serdes_n_to_1.verilog_code = """
 
-wire		cascade_di ;
-wire		cascade_do ;
-wire		cascade_ti ;
-wire		cascade_to ;
-wire	[8:0]	mdatain ;
+wire		cascade_di_$count ;
+wire		cascade_do_$count ;
+wire		cascade_ti_$count ;
+wire		cascade_to_$count ;
+wire	[8:0]	mdatain_$count ;
 
-genvar i ;
+genvar j_$count ;
 
 generate
-    for (i = 0 ; i <= ($factor - 1) ; i = i + 1)
-    begin : loop0
-        assign mdatain[i] = $data_in[i] ;
+    for (j_$count = 0 ; j_$count <= ($factor - 1) ; j_$count = j_$count + 1)
+    begin : loop0_$count
+        assign mdatain_$count[j_$count] = $data_in[j_$count] ;
     end
 endgenerate
 
 generate
-    for (i = ($factor) ; i <= 8 ; i = i + 1)
-    begin : loop1
-        assign mdatain[i] = 1'b0 ;
+    for (j_$count = ($factor) ; j_$count <= 8 ; j_$count = j_$count + 1)
+    begin : loop1_$count
+        assign mdatain_$count[j_$count] = 1'b0 ;
     end
 endgenerate
 
@@ -69,10 +69,10 @@ oserdes_m_$count (
     .IOCE    		($serdes_strobe),
     .RST     		($reset),
     .CLKDIV  		($g_clock),
-    .D4  			(mdatain[7]),
-    .D3  			(mdatain[6]),
-    .D2  			(mdatain[5]),
-    .D1  			(mdatain[4]),
+    .D4  			(mdatain_$count[7]),
+    .D3  			(mdatain_$count[6]),
+    .D2  			(mdatain_$count[5]),
+    .D1  			(mdatain_$count[4]),
     .TQ  			(),
     .T1 			(1'b0),
     .T2 			(1'b0),
@@ -82,10 +82,10 @@ oserdes_m_$count (
     .TCE	   		(1'b1),
     .SHIFTIN1 		(1'b1),			// Dummy input in Master
     .SHIFTIN2 		(1'b1),			// Dummy input in Master
-    .SHIFTIN3 		(cascade_do),		// Cascade output D data from slave
-    .SHIFTIN4 		(cascade_to),		// Cascade output T data from slave
-    .SHIFTOUT1 		(cascade_di),		// Cascade input D data to slave
-    .SHIFTOUT2 		(cascade_ti),		// Cascade input T data to slave
+    .SHIFTIN3 		(cascade_do_$count),		// Cascade output D data from slave
+    .SHIFTIN4 		(cascade_to_$count),		// Cascade output T data from slave
+    .SHIFTOUT1 		(cascade_di_$count),		// Cascade input D data to slave
+    .SHIFTOUT2 		(cascade_ti_$count),		// Cascade input T data to slave
     .SHIFTOUT3 		(),			// Dummy output in Master
     .SHIFTOUT4 		()) ;			// Dummy output in Master
 
@@ -103,10 +103,10 @@ oserdes_s_$count (
     .IOCE    		($serdes_strobe),
     .RST     		($reset),
     .CLKDIV  		($g_clock),
-    .D4  			(mdatain[3]),
-    .D3  			(mdatain[2]),
-    .D2  			(mdatain[1]),
-    .D1  			(mdatain[0]),
+    .D4  			(mdatain_$count[3]),
+    .D3  			(mdatain_$count[2]),
+    .D2  			(mdatain_$count[1]),
+    .D1  			(mdatain_$count[0]),
     .TQ  			(),
     .T1 			(1'b0),
     .T2 			(1'b0),
@@ -114,12 +114,12 @@ oserdes_s_$count (
     .T4  			(1'b0),
     .TRAIN 			(1'b0),
     .TCE	 		(1'b1),
-    .SHIFTIN1 		(cascade_di),		// Cascade input D from Master
-    .SHIFTIN2 		(cascade_ti),		// Cascade input T from Master
+    .SHIFTIN1 		(cascade_di_$count),		// Cascade input D from Master
+    .SHIFTIN2 		(cascade_ti_$count),		// Cascade input T from Master
     .SHIFTIN3 		(1'b1),			// Dummy input in Slave
     .SHIFTIN4 		(1'b1),			// Dummy input in Slave
     .SHIFTOUT1 		(),			// Dummy output in Slave
     .SHIFTOUT2 		(),			// Dummy output in Slave
-    .SHIFTOUT3 		(cascade_do),   	// Cascade output D data to Master
-    .SHIFTOUT4 		(cascade_to)) ; 	// Cascade output T data to Master
+    .SHIFTOUT3 		(cascade_do_$count),   	// Cascade output D data to Master
+    .SHIFTOUT4 		(cascade_to_$count)) ; 	// Cascade output T data to Master
 """
