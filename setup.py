@@ -6,12 +6,13 @@ except ImportError:
     from distutils.core import setup
     from pkgutil import walk_packages
 
+
     def _find_packages(path='.', prefix=''):
         yield prefix
         prefix += "."
         for _, name, is_package in walk_packages(path,
-                                            prefix,
-                                            onerror=lambda x: x):
+                                                 prefix,
+                                                 onerror=lambda x: x):
             if is_package:
                 yield name
 

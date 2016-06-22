@@ -4,7 +4,7 @@ inst_count = 0
 
 
 @block
-def buffer(inp, output):
+def general_buffer(inp, output):
     global inst_count
 
     @always_comb
@@ -16,6 +16,6 @@ def buffer(inp, output):
     return BUFG_primitive
 
 
-buffer.verilog_code = """
+general_buffer.verilog_code = """
     BUFG bufg_$inst_count (.I($inp), .O($output));
 """

@@ -28,8 +28,8 @@ class VideoInterface(object):
         self.color_depth = color_depth
         self.pixel = [0, 0, 0]
 
-        self.hpixel = 0 # column number of the current pixel
-        self.vpixel = 0 # row number of the current pixel
+        self.hpixel = 0     # column number of the current pixel
+        self.vpixel = 0     # row number of the current pixel
 
         # RGB data from video source
         self.red = Signal(intbv(0)[color_depth[0]:])

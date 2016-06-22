@@ -33,6 +33,7 @@ def test_aux_interface():
 
     return instances()
 
-test_instance = test_aux_interface()
-test_instance.run_sim(8)
-test_instance.quit_sim()
+if __name__ == '__main__':
+    test_instance = test_aux_interface()
+    test_instance.run_sim(8)
+    test_instance.quit_sim()

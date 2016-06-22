@@ -11,7 +11,6 @@ nSTATES = 6
 
 @block
 def phase_aligner(reset, clock, s_data, bit_slip, flip_gear, phase_aligned):
-
     control_token = [852,  # 00
                      171,  # 01
                      340,  # 10
@@ -46,7 +45,7 @@ def phase_aligner(reset, clock, s_data, bit_slip, flip_gear, phase_aligned):
 
     @always(clock.posedge)
     def search_time_out():
-        if ctrl_tkn_search_timer == concat(*[True for _ in range(search_timer_width)]):
+        if ctrl_tkn_search_timer == (1 << search_timer_width + 1) - 1:
             ctrl_tkn_search_tout.next = True
         else:
             ctrl_tkn_search_tout.next = False
@@ -65,7 +64,7 @@ def phase_aligner(reset, clock, s_data, bit_slip, flip_gear, phase_aligned):
 
     @always(clock.posedge)
     def event_time_out():
-        if ctrl_tkn_event_timer == concat(*[True for _ in range(ctrl_tkn_counter_width)]):
+        if ctrl_tkn_event_timer == (1 << ctrl_tkn_counter_width + 1) - 1:
             ctrl_tkn_event_tout.next = True
         else:
             ctrl_tkn_event_tout.next = False
@@ -100,7 +99,7 @@ def phase_aligner(reset, clock, s_data, bit_slip, flip_gear, phase_aligned):
             else:
                 next_state.next = SEARCH
         elif curr_state == BLANK_PERIOD:
-            if blank_period_counter == concat(*[True for _ in range(blank_period_counter_width)]):
+            if blank_period_counter == (1 << blank_period_counter_width + 1) - 1:
                 next_state.next = PHASE_ALIGNED
             else:
                 next_state.next = SEARCH

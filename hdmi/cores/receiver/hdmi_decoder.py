@@ -1,6 +1,6 @@
 from myhdl import block, Signal, concat, always_comb, always, intbv, instances, ConcatSignal
 
-from hdmi.cores.primitives import buffer_ds, buffer_io, buffer, pll_clock_generator, pll_buffer
+from hdmi.cores.primitives import buffer_ds, buffer_io, general_buffer, pll_clock_generator, pll_buffer
 from hdmi.cores.receiver import decode
 
 
@@ -47,15 +47,15 @@ def hdmi_decoder(ext_reset, hdmi_interface, video_interface, aux_interface):
 
     ibuf_rx_clock = buffer_ds(hdmi_interface.TMDS_CLK_P, hdmi_interface.TMDS_CLK_N, rx_clock_int)
     bufio_tmds_clock = buffer_io(rx_clock_int, rx_clock)
-    tmds_clock_bufg = buffer(rx_clock, tmds_clock)
+    tmds_clock_bufg = general_buffer(rx_clock, tmds_clock)
 
     pll_clock_feedback = Signal(False)
 
     pll_iserdes = pll_clock_generator(pll_clock_feedback, pll_clock_0, pll_clock_1, pll_clock_2,
                                       pll_locked, pll_clock_feedback, rx_clock, ext_reset)
 
-    p_clock_bufg = buffer(pll_clock_1, p_clock)
-    p_clockx2_bufg = buffer(pll_clock_2, p_clockx2)
+    p_clock_bufg = general_buffer(pll_clock_1, p_clock)
+    p_clockx2_bufg = general_buffer(pll_clock_2, p_clockx2)
 
     buf_pll_lock = Signal(False)
     io_clock_buf = pll_buffer(pll_clock_0, p_clockx2, pll_locked, p_clockx10, serdes_strobe, buf_pll_lock)

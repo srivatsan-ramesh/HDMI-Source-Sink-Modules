@@ -4,3 +4,6 @@ pylint:
   disable:
     - unused-variable
     - unused-argument
+pyflakes:
+  disable:
+    - F841

@@ -35,6 +35,7 @@ def test_video_interface():
 
     return instances()
 
-test_inst = test_video_interface()
-test_inst.run_sim(10000)
-test_inst.quit_sim()
+if __name__ == '__main__':
+    test_inst = test_video_interface()
+    test_inst.run_sim(10000)
+    test_inst.quit_sim()

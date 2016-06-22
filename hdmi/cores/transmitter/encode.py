@@ -145,10 +145,39 @@ def encode(clock, reset, video_in, audio_in, c0, c1, vde, ade, data_out, channel
             if vde:
                 data_out.next = video_guard_band
             elif ade_vld:
-                terc4_encoding = [668, 611, 740, 738, 369, 286, 398, 316,
-                                  716, 313, 412, 710, 654, 625, 355, 707]
-                data_out.next = terc4_encoding[audio_in_vld]
-            elif (ade | ____ade) and (channel != "BLUE"):
+                if audio_in_vld == 0:
+                    data_out.next = 668
+                elif audio_in_vld == 1:
+                    data_out.next = 611
+                elif audio_in_vld == 2:
+                    data_out.next = 740
+                elif audio_in_vld == 3:
+                    data_out.next = 738
+                elif audio_in_vld == 4:
+                    data_out.next = 369
+                elif audio_in_vld == 5:
+                    data_out.next = 286
+                elif audio_in_vld == 6:
+                    data_out.next = 398
+                elif audio_in_vld == 7:
+                    data_out.next = 316
+                elif audio_in_vld == 8:
+                    data_out.next = 716
+                elif audio_in_vld == 9:
+                    data_out.next = 313
+                elif audio_in_vld == 10:
+                    data_out.next = 412
+                elif audio_in_vld == 11:
+                    data_out.next = 710
+                elif audio_in_vld == 12:
+                    data_out.next = 654
+                elif audio_in_vld == 13:
+                    data_out.next = 625
+                elif audio_in_vld == 14:
+                    data_out.next = 355
+                elif audio_in_vld == 15:
+                    data_out.next = 707
+            elif (ade or ____ade) and (channel != "BLUE"):
                 data_out.next = data_island_guard_band
             else:
                 concat_c = concat(__c1, __c0)

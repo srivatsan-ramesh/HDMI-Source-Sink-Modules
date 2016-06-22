@@ -13,11 +13,20 @@ def hdmi_encoder(p_clock, p_clockx2, p_clockx10, reset, serdes_strobe,
     def assign_control():
 
         if video_interface.vde:     # video_preamble
-            control0.next, control1.next, control2.next, control3.next = 1, 0, 0, 0
+            control0.next = 1
+            control1.next = 0
+            control2.next = 0
+            control3.next = 0
         elif aux_interface.ade:     # data_island_preamble
-            control0.next, control1.next, control2.next, control3.next = 1, 0, 1, 0
+            control0.next = 1
+            control1.next = 0
+            control2.next = 1
+            control3.next = 0
         else:   # null_control
-            control0.next, control1.next, control2.next, control3.next = 0, 0, 0, 0
+            control0.next = 0
+            control1.next = 0
+            control2.next = 0
+            control3.next = 0
 
     red = Signal(intbv(0)[10:0])
     green = Signal(intbv(0)[10:0])
