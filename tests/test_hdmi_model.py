@@ -29,7 +29,7 @@ def test_hdmi_model():
     clk_10x = clock_driver(clock10x, 1)
 
     video_source = itertools.product(['0', '1'], repeat=8)
-    aux_data = (10, 15, 10)
+    aux_source = itertools.product(['0', '1'], repeat=4)
     hdmi_tx_inst = hdmi_tx_model.process()
     hdmi_tx_inst.name = 'tx_process'
     hdmi_rx_inst = hdmi_rx_model.process()
@@ -96,9 +96,11 @@ def test_hdmi_model():
         for _ in range(10):
             yield clock.posedge
             append_signals()
+        aux_data = [int(''.join(next(aux_source)), 2) for __ in range(3)]
         yield aux_interface_tx.enable_aux(), aux_interface_tx.write_aux(*aux_data)
         append_signals()
-        for _ in range(20):
+        for _ in range(5):
+            aux_data = [int(''.join(next(aux_source)), 2) for __ in range(3)]
             yield aux_interface_tx.write_aux(*aux_data)
             append_signals()
         yield aux_interface_tx.disable_aux()
