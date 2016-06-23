@@ -7,6 +7,21 @@ from hdmi.cores.receiver import decode
 @block
 def hdmi_decoder(ext_reset, hdmi_interface, video_interface, aux_interface):
 
+    """
+
+    This block implements the HDMI decoder module modelled after the xapp 495 application notes.
+
+    Args:
+        ext_reset: An external reset signal
+        hdmi_interface: An instance of HDMIInterface
+        video_interface: An instance of VideoInterface
+        aux_interface: An instane of AuxInterface
+
+    Returns:
+        myhdl.instances() : A list of myhdl instances.
+
+    """
+
     p_clock, p_clockx2, p_clockx10, pll_clock_0, pll_clock_1, pll_clock_2, \
         pll_locked, serdes_strobe, tmds_clock, blue_valid, green_valid, red_valid, \
         blue_ready, green_ready, red_ready, phase_align_err, reset = [Signal(False) for _ in range(17)]

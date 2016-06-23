@@ -5,6 +5,26 @@ count = 0
 
 @block
 def serdes_n_to_1(io_clock, serdes_strobe, reset, g_clock, data_in, iob_data_out, factor=8):
+
+    """
+
+    The block converts the n-bit parallel data into a serial data. This block will be replaced
+    with the xilinx primitive OSERDES2 during conversion.
+
+    Args:
+        io_clock: The clock used in the output side (For serial data)
+        serdes_strobe: The signal is used in the xilinx primitive
+        reset: The reset signal
+        g_clock: Clock on the input side (For the parallel data)
+        data_in: The input parallel data n-bit
+        iob_data_out: Output serial data
+        factor: width of the input data
+
+    Returns:
+        myhdl.instances() : A list of myhdl instances.
+
+    """
+
     global count
 
     @instance

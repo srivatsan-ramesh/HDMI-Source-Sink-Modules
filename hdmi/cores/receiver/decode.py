@@ -10,6 +10,42 @@ def decode(reset, p_clock, p_clockx2, p_clockx10, serdes_strobe, data_in_p, data
            video_preamble, data_island_preamble, i_am_ready, i_am_valid, phase_align_err,
            c0, c1, vde, ade, s_data_out, video_out, audio_out, channel='BLUE'):
 
+    """
+
+    This module performs the decoding logic of a hdmi decoder for a particular channel.
+    It is modelled after the xilinx application notes xapp460 and xapp495.
+
+    Args:
+        reset: An asynchronous reset signal that resets the output.
+        p_clock: The pixel clock
+        p_clockx2: Clock with twice the frequency of pixel clock
+        p_clockx10: Clock with ten times the frequency of pixel clock
+        serdes_strobe: The signal used in serdes block
+        data_in_p: Differential signal input
+        data_in_n: Differential signal input
+        other_ch0_valid: Denotes the validity of other channel data
+        other_ch1_valid: Denotes the validity of other channel data
+        other_ch0_ready: Denotes the readiness of other channel data
+        other_ch1_ready: Denotes the readiness of other channel data
+        video_preamble: Denotes the video preamble region of the input data
+        data_island_preamble: Denotes the data island preamble region of the input data
+        i_am_ready: Denotes the readiness of this channel data
+        i_am_valid: Denotes the validity of this channel data
+        phase_align_err: Becomes True when there is an error in aligning the phase
+        c0: Control signal (hsync in BLUE channel)
+        c1: Control signal (vsync in BLUE channel)
+        vde: Video data enable
+        ade: Auxiliary data enable
+        s_data_out: The raw 10 bit data obtained from TMDS channels
+        video_out: The decoded video data
+        audio_out: The decoded audio data
+        channel: The color of the channel (Default: BLUE)
+
+    Returns:
+        myhdl.instances() : A list of myhdl instances.
+
+    """
+
     flip_gear, flip_gearx2, toggle, rx_toggle = [Signal(bool(0)) for _ in range(4)]
 
     @always(p_clockx2.posedge)

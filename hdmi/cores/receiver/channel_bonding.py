@@ -8,6 +8,27 @@ from hdmi.cores.primitives import dram16xn
 def channel_bonding(clock, raw_data, i_am_valid, other_ch0_valid, other_ch1_valid,
                     other_ch0_ready, other_ch1_ready, i_am_ready, s_data):
 
+    """
+
+    This module implements the channel bonding logic and TMDS channel de-skew logic.
+    It is modelled after the xapp495 channel_bonding module
+
+    Args:
+        clock: The global clock or the pixel clock
+        raw_data: The 10 bit raw data obtained by de-serializing the TMDS data
+        i_am_valid: A signal used to denote the validity of this channel
+        other_ch0_valid: A signal used to denote the validity of other channel
+        other_ch1_valid: A signal used to denote the validity of other channel
+        other_ch0_ready: A signal used to denote the readiness of other channel
+        other_ch1_ready: A signal used to denote the readiness of other channel
+        i_am_ready: A signal used to denote the readiness of this channel
+        s_data: The 10-bit output data after channel de-skew
+
+    Returns:
+        myhdl.instances() : A list of myhdl instances.
+
+    """
+
     raw_data_valid = Signal(False)
 
     @always_comb

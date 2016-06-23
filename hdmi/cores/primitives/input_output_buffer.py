@@ -6,6 +6,20 @@ inst_count = 0
 @block
 def buffer_io(inp, output):
 
+    """
+
+    An IO buffer which will be replaced by the xilinx primitive BUFIO2
+    during conversion.
+
+    Args:
+        inp: Input signal
+        output: Output same as that of input.
+
+    Returns:
+        myhdl.instances() : A list of myhdl instances.
+
+    """
+
     global inst_count
 
     @always_comb

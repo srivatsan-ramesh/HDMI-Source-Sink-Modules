@@ -7,6 +7,25 @@ from hdmi.cores.transmitter import serdes_n_to_1, encode, convert_30_to_15
 def hdmi_encoder(p_clock, p_clockx2, p_clockx10, reset, serdes_strobe,
                  video_interface, aux_interface, hdmi_interface):
 
+    """
+
+    This block implements the HDMI encoder module modelled after the xapp 495 application notes.
+
+    Args:
+        p_clock: The pixel clock
+        p_clockx2: The clock with twice the frequency of the pixel clock
+        p_clockx10: The clock with ten times the frequency of the pixel clock
+        reset: An asynchronous reset signal
+        serdes_strobe: Serdes strobe for serdes blocks
+        video_interface: An instance of VideoInterface
+        aux_interface: An instance of AuxInterface
+        hdmi_interface: An instance of HDMIInterface
+
+    Returns:
+        myhdl.instances() : A list of myhdl instances.
+
+    """
+
     control0, control1, control2, control3 = [Signal(bool(0)) for _ in range(4)]
 
     @always_comb

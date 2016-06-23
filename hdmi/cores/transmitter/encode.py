@@ -3,6 +3,29 @@ from myhdl import block, Signal, intbv, always, concat, always_seq, instances, m
 
 @block
 def encode(clock, reset, video_in, audio_in, c0, c1, vde, ade, data_out, channel='BLUE'):
+
+    """
+
+    This module performs the TMDS encoding logic of a hdmi encoder for a particular channel.
+    It is modelled after the xilinx application notes xapp460 and xapp495.
+
+    Args:
+        clock: The pixel clock
+        reset: An asynchronous reset signal
+        video_in: input video data
+        audio_in: input audio data
+        c0: control signal (hsync for BLUE channel)
+        c1: control signal (vsync for BLUE channel)
+        vde: video data enable
+        ade: auxiliary data enable
+        data_out: output encoded 10 bit data
+        channel: The color of the channel (Default: BLUE)
+
+    Returns:
+        myhdl.instances() : A list of myhdl instances.
+
+    """
+
     control_token = (852, 171, 340, 683)
     terc4_encoding = (668, 611, 740, 738, 369, 286, 398, 316,
                       716, 313, 412, 710, 654, 625, 355, 707)

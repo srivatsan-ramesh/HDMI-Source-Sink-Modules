@@ -1,15 +1,19 @@
-# HDMI-Source-Sink-Modules
+HDMI-Source-Sink-Modules
+========================
 
-[![Build Status](https://travis-ci.org/srivatsan-ramesh/HDMI-Source-Sink-Modules.svg?branch=master)](https://travis-ci.org/srivatsan-ramesh/HDMI-Source-Sink-Modules) [![Code Health](https://landscape.io/github/srivatsan-ramesh/HDMI-Source-Sink-Modules/master/landscape.svg?style=flat)](https://landscape.io/github/srivatsan-ramesh/HDMI-Source-Sink-Modules/master) [![Coverage Status](https://coveralls.io/repos/github/srivatsan-ramesh/HDMI-Source-Sink-Modules/badge.svg?branch=master)](https://coveralls.io/github/srivatsan-ramesh/HDMI-Source-Sink-Modules?branch=master)
+[![Build Status](https://travis-ci.org/srivatsan-ramesh/HDMI-Source-Sink-Modules.svg?branch=master)](https://travis-ci.org/srivatsan-ramesh/HDMI-Source-Sink-Modules) [![Code Health](https://landscape.io/github/srivatsan-ramesh/HDMI-Source-Sink-Modules/master/landscape.svg?style=flat)](https://landscape.io/github/srivatsan-ramesh/HDMI-Source-Sink-Modules/master) [![Coverage Status](https://coveralls.io/repos/github/srivatsan-ramesh/HDMI-Source-Sink-Modules/badge.svg?branch=master)](https://coveralls.io/github/srivatsan-ramesh/HDMI-Source-Sink-Modules?branch=master) [![Documentation Status](https://readthedocs.org/projects/hdmi-source-sink-modules/badge/?version=latest)](http://hdmi-source-sink-modules.readthedocs.io/en/latest/?badge=latest)
+
 
 Implementation of HDMI Source/Sink Modules in MyHDL (http://www.myhdl.org/)
 
-## Requirements ##
+Requirements
+------------
 
 * Python 3.5
 * MyHDL 1.0.dev0
 
-## Getting Started ##
+Getting Started
+---------------
 
 Clone this repository to get started. 
 
@@ -30,7 +34,8 @@ After the dependencies have been installed, install the project.
   >> python setup.py install
 ```
 
-## Running Tests ##
+Running Tests
+-------------
 
 The tests can be run using pytest. 
 
@@ -39,7 +44,8 @@ The tests can be run using pytest.
   >> py.test
 ```
 
-## Using Models ##
+Using Models
+------------
 
 HDMI Source/Sink Models are non-convertible modules which can be used to simulate the behaviour of HDMI Source/Sink Modules.
 To initialize the interfaces - 

@@ -4,14 +4,37 @@ from hdmi.cores.primitives import ram16x1d
 
 inst_count = 0
 
+
 @block
 def dram16xn(data_in, address, address_dp, write_enable, clock,
              o_data_out, o_data_out_dp, data_width=30):
+
+    """
+
+    Implements a Distributed SelectRAM with Dual port 16 x N-bit.
+    It will be replaced by a verilog code which makes use of the xilinx primitive
+    RAM16X1D during conversion.
+
+    Args:
+        data_in: The input data
+        address: Single port address
+        address_dp: Dual port address
+        write_enable: write enable for the RAM16X1D
+        clock: write clock
+        o_data_out: single port output
+        o_data_out_dp: dual port output
+        data_width: number of words stored in the DRAM
+
+    Returns:
+        myhdl.instances() : A list of myhdl instances.
+
+    """
 
     global inst_count
     ram16x1d_inst = ram16x1d(data_in, write_enable, clock, address, address_dp, o_data_out, o_data_out_dp, data_width)
     inst_count += 1
     return ram16x1d_inst
+
 
 dram16xn.verilog_code = """
 genvar i_$inst_count;

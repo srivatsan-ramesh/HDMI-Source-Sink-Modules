@@ -6,6 +6,22 @@ inst_count = 0
 @block
 def buffer_ds(input_p, input_n, output, diff_term='FALSE'):
 
+    """
+
+    This is a Differential Signalling Buffer modelled after the xilinx primitive IBUFDS.
+    This block will be replaced by the xilinx primitive declaration during conversion.
+
+    Args:
+        input_p: Positive differential signal
+        input_n: Negative differential signal
+        output: Output signal derived from the inputs
+        diff_term: A parameter used in the xilinx primitive
+
+    Returns:
+        myhdl.instances() : A list of myhdl instances.
+
+    """
+
     global inst_count
 
     @always_comb

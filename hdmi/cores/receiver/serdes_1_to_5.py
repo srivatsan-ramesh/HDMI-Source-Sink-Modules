@@ -6,6 +6,30 @@ def serdes_1_to_5(use_phase_detector, data_in_p, data_in_n, rx_io_clock,
                   rx_serdes_strobe, reset, g_clock, bit_slip, data_out,
                   diff_term='TRUE', bit_slip_enable='TRUE', sim_tap_delay = 49):
 
+    """
+
+    The block converts the serial data into a 5 bit parallel data. This block will be replaced
+    with the xilinx primitives IODELAY2 and ISERDES2 during conversion.
+
+    Args:
+        use_phase_detector: The signal is used by the xilinx primitive
+        data_in_p: The input differential data
+        data_in_n: The input differential data
+        rx_io_clock: The clock from the input side (serial data)
+        rx_serdes_strobe: The signal is used by the xilinx primitive
+        reset: The signal is used by the xilinx primitive
+        g_clock: The clock on the output side (parallel data)
+        bit_slip: The signal is used by the xilinx primitive
+        data_out: The output parallel data (5-bit)
+        diff_term: The parameter is used by the xilinx primitive
+        bit_slip_enable: The parameter is used by the xilinx primitive
+        sim_tap_delay: The parameter is used by the xilinx primitive
+
+    Returns:
+        myhdl.instances() : A list of myhdl instances.
+
+    """
+
     data = ['0' for _ in range(5)]
 
     @instance

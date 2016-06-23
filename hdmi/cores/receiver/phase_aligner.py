@@ -14,6 +14,24 @@ nSTATES = 6
 @block
 def phase_aligner(reset, clock, s_data, bit_slip, flip_gear, phase_aligned):
 
+    """
+
+    This impliments the phase alignment logic modelled after the phase aligner module from
+    xapp495 application notes.
+
+    Args:
+        reset: reset signal
+        clock: pixel clock
+        s_data: the 10-bit TMDS data
+        bit_slip: An input signal
+        flip_gear: An input signal
+        phase_aligned: denotes whether the phase is aligned
+
+    Returns:
+        myhdl.instances() : A list of myhdl instances.
+
+    """
+
     open_eye_counter_width = 3
     ctrl_tkn_counter_width = 7
     search_timer_width = 12

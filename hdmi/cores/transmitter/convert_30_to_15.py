@@ -6,6 +6,24 @@ from hdmi.cores.primitives import dram16xn
 @block
 def convert_30_to_15(reset, clock, clockx2, data_in, tmds_data2, tmds_data1, tmds_data0):
 
+    """
+
+    The block converts the 30-bit data into 15-bit data.
+
+    Args:
+        reset: The reset signal
+        clock: The pixel clock
+        clockx2: The clock with twice the frequency of pixel clock
+        data_in: The input 30-bit data
+        tmds_data2: 5 bits of the output data (output[15:10])
+        tmds_data1: 5 bits of the output data (output[10:5])
+        tmds_data0: 5 bits of the output data (output[5:0])
+
+    Returns:
+        myhdl.instances() : A list of myhdl instances.
+
+    """
+
     # RAM Address
     write_addr, _write_addr, read_addr, _read_addr = [Signal(intbv(0)[4:0]) for _ in range(4)]
 
