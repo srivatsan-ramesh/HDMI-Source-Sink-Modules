@@ -10,13 +10,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   index
    api_docs
 
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 
