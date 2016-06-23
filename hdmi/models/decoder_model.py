@@ -4,34 +4,35 @@ from hdmi.models.constants import CONTROL_TOKEN
 
 
 class DecoderModel(object):
+    """
 
-    def __init__(self, clock, data_in, video_preamble, data_island_preamble, c0,
-                 c1, vde, ade, video_out, audio_out, channel='BLUE'):
+    A non-convertible HDMI Decoder Model which decodes the TMDS data and outputs the video and aux data.
+    This is modelled after the xapp495 decoder module.
 
-        """
+    Args:
+        clock: The system clock or the pixel clock
+        data_in: The TMDS data (10 bits width) to be decoded
+        video_preamble: signal to detect the video preamble in the input data
+        data_island_preamble: signal to detect the data island preamble in the input data
+        c0: Control signal (hsync for Blue channel)
+        c1: Control signal (vsync for Blue channel)
+        vde: Video Data enable
+        ade: Audio data enable
+        video_out: Output video data
+        audio_out: Output audio (or aux) data.
+        channel: Color of the channel ('RED', 'GREEN' or 'BLUE'). Default value is 'BLUE'
 
-         A non-convertible HDMI Decoder Model which decodes the TMDS data and outputs the video and aux data.
-         This is modelled after the xapp495 decoder module.
+    Example:
+        .. code-block:: python
 
-        Args:
-            clock: The system clock or the pixel clock
-            data_in: The TMDS data (10 bits width) to be decoded
-            video_preamble: signal to detect the video preamble in the input data
-            data_island_preamble: signal to detect the data island preamble in the input data
-            c0: Control signal (hsync for Blue channel)
-            c1: Control signal (vsync for Blue channel)
-            vde: Video Data enable
-            ade: Audio data enable
-            video_out: Output video data
-            audio_out: Output audio (or aux) data.
-            channel: Color of the channel ('RED', 'GREEN' or 'BLUE'). Default value is 'BLUE'
-
-        Usage:
             decoder_model = DecoderModel(*params)
             process_inst = decoder_model.process()
             process_inst.run_sim()
 
-        """
+    """
+
+    def __init__(self, clock, data_in, video_preamble, data_island_preamble, c0,
+                 c1, vde, ade, video_out, audio_out, channel='BLUE'):
 
         self.clock = clock
         self.data_in = data_in
@@ -59,16 +60,18 @@ class DecoderModel(object):
         self.data_in.next = data_in
         yield self.clock.posedge
 
-
     @block
     def process(self):
 
         """
+
         It simulates the decoding process of the TMDS decoder.
 
-        Usage:
-            process_inst = decoder_model.process()
-            process_inst.run_sim()
+        Example:
+            .. code-block:: python
+
+                process_inst = decoder_model.process()
+                process_inst.run_sim()
 
         """
 
@@ -136,7 +139,7 @@ class DecoderModel(object):
                 if video_period:
                     self.video_out.next[0] = data[0]
                     for i in range(1, 8):
-                        self.video_out.next[i] = data[i] ^ (data[i-1] if self.data_in[8] == 1 else not data[i-1])
+                        self.video_out.next[i] = data[i] ^ (data[i - 1] if self.data_in[8] == 1 else not data[i - 1])
                     self.ade.next = 0
                     self.vde.next = 1
 

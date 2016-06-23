@@ -13,8 +13,10 @@ class HDMIInterface(object):
          Args:
             clock10x: A reference clock 10 times the pixel clock
 
-         Usage:
-            hdmi_interface = HDMIInterface(clock10x)
+         Example:
+            .. code-block:: python
+
+                hdmi_interface = HDMIInterface(clock10x)
 
         """
 
@@ -45,9 +47,11 @@ class HDMIInterface(object):
              TMDS_B: Serialized TMDS encoded video data
              TMDS_CLK: Clock used by the sink to recover data
 
-         Usage:
-            # The values passed should be 1(or True) or 0(or False).
-            yield hdmi_interface.write_data(0, 0, 0, 0)
+         Example:
+            .. code-block:: python
+
+                # The values passed should be 1(or True) or 0(or False).
+                yield hdmi_interface.write_data(0, 0, 0, 0)
 
         """
 

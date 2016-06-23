@@ -7,32 +7,35 @@ from hdmi.models.constants import CONTROL_TOKEN
 
 class EncoderModel(object):
 
-    def __init__(self, clock, reset, video_in, audio_in, c0, c1, vde, ade,
-                 data_out, channel='BLUE'):
+    """
 
-        """
+    A non convertible model to simulate the behaviour of
+    a TMDS and TERC4 encoder.
 
-         A non convertible model to simulate the behaviour of
-         a TMDS and TERC4 encoder.
+    Args:
+        clock: pixel clock as input
+        reset: asynchronous reset input (active high)
+        video_in: video input of a single channel
+        audio_in: audio input
+        c0: used to determine preamble
+        c1: used to determine preamble
+        vde: video data enable
+        ade: audio data enable
+        data_out: 10 bit parallel output
+        channel: Indicates 'RED', 'GREEN' or 'BLUE' channel
 
-        Args:
-            clock: pixel clock as input
-            reset: asynchronous reset input (active high)
-            video_in: video input of a single channel
-            audio_in: audio input
-            c0: used to determine preamble
-            c1: used to determine preamble
-            vde: video data enable
-            ade: audio data enable
-            data_out: 10 bit parallel output
-            channel: Indicates 'RED', 'GREEN' or 'BLUE' channel
+    Example:
+        .. code-block:: python
 
-        Usage:
             encoder_model = EncoderModel(*params)
             process_inst = encoder_model.process()
             process_inst.run_sim()
 
-        """
+    """
+
+    def __init__(self, clock, reset, video_in, audio_in, c0, c1, vde, ade,
+                 data_out, channel='BLUE'):
+
         self.channel = channel
         self.clock = clock
         self.reset = reset
@@ -52,9 +55,11 @@ class EncoderModel(object):
 
         It simulates the encoding process of the TMDS encoder.
 
-        Usage:
-            process_inst = encoder_model.process()
-            process_inst.run_sim()
+        Example:
+            .. code-block:: python
+
+                process_inst = encoder_model.process()
+                process_inst.run_sim()
 
         """
 
