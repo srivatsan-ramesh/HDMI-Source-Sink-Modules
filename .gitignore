@@ -14,3 +14,7 @@ pip-delete-this-directory.txt
 *.egg-info
 
 *.vcd
+
+_build*
+_static
+_templates
