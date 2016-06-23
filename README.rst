@@ -15,7 +15,8 @@ HDMI-Source-Sink-Modules
     :target: http://hdmi-source-sink-modules.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
-Implementation of HDMI Source/Sink Modules in MyHDL (http://www.myhdl.org/)
+Implementation of HDMI Source/Sink Modules in MyHDL (http://www.myhdl.org/). 
+Xilinx application notes `xapp460 <http://www.xilinx.com/support/documentation/application_notes/xapp460.pdf>`_ and `xapp495 <http://www.xilinx.com/support/documentation/application_notes/xapp495_S6TMDS_Video_Interface.pdf>`_ were used as reference.
 
 Requirements
 ------------
