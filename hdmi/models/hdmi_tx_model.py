@@ -1,36 +1,34 @@
-from myhdl import Signal, always, intbv, instance, block, delay
+from myhdl import Signal, always, intbv, instance, block, delay, instances
 
 from hdmi.models import EncoderModel
 
 
 class HDMITxModel(object):
 
-    def __init__(self, clock, clock5x, clock5x_not, reset, video_interface, aux_interface, hdmi_interface):
+    """
 
-        """
+    A non-convertible HDMI Transmitter Model which encodes the input video and AUX data and transmits it.
+    This is modelled after the xapp495 HDMI Tx module.
 
-         A non-convertible HDMI Transmitter Model which encodes the input video and AUX data and transmits it.
-         This is modelled after the xapp495 HDMI Tx module.
+    Args:
+        clock: System clock or the pixel clock
+        reset: Reset signal
+        video_interface: An instance of the VideoInterface class
+        aux_interface: An instance of the AUXInterface class
+        hdmi_interface: An instance of the HDMIInterface class
 
-        Args:
-            clock: System clock or the pixel clock
-            clock5x: clock with frequency 5 times that of pixel clock
-            clock5x_not: clock with five times the frequency of pixel clock and phase shifted ny 180 degrees
-            reset: Reset signal
-            video_interface: An instance of the VideoInterface class
-            aux_interface: An instance of the AUXInterface class
-            hdmi_interface: An instance of the HDMIInterface class
+    Example:
+        .. code-block:: python
 
-        Usage:
             hdmi_tx_model = HDMITxModel(*params)
             process_inst = hdmi_tx_model.process()
             process_inst.run_sim()
 
-        """
+    """
+
+    def __init__(self, clock, reset, video_interface, aux_interface, hdmi_interface):
 
         self.clock = clock
-        self.clock5x = clock5x
-        self.clock5x_not = clock5x_not
         self.reset = reset
         self.video_interface = video_interface
         self.aux_interface = aux_interface
@@ -43,9 +41,11 @@ class HDMITxModel(object):
 
         It simulates the process of the transmitting data by the HDMI transmitter.
 
-        Usage:
-            process_inst = hdmi_tx_model.process()
-            process_inst.run_sim()
+        Example:
+            .. code-block:: python
+
+                process_inst = hdmi_tx_model.process()
+                process_inst.run_sim()
 
         """
 
@@ -145,5 +145,4 @@ class HDMITxModel(object):
                                                          blue_data_out[i],
                                                          self.clock)
 
-        return serial_delay, serialize, \
-            blue_encoder_inst, green_encoder_inst, red_encoder_inst
+        return instances()

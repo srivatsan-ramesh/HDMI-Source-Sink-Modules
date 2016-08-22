@@ -1,16 +1,16 @@
 import itertools
 from myhdl import instance, Signal, ResetSignal, block, delay, StopSimulation, instances
 
+from hdmi.cores.receiver import hdmi_decoder
+from hdmi.cores.transmitter import hdmi_encoder
 from hdmi.interfaces import VideoInterface, AuxInterface, HDMIInterface
-from hdmi.models import HDMITxModel, HDMIRxModel
 from hdmi.utils import clock_driver
 
 
 @block
-def test_hdmi_model():
+def test_hdmi_core():
     # Clock and reset signals
-    clock = Signal(bool(0))
-    clock10x = Signal(bool(1))
+    clock, clock2x, clock10x, serdes_strobe = [Signal(bool(0)) for _ in range(4)]
     reset = ResetSignal(0, True, False)
 
     video_interface_tx = VideoInterface(clock)
@@ -21,19 +21,16 @@ def test_hdmi_model():
     aux_interface_rx = AuxInterface(clock)
     hdmi_interface_rx = hdmi_interface_tx
 
-    hdmi_tx_model = HDMITxModel(clock, reset,
+    hdmi_tx_inst = hdmi_encoder(clock, clock2x, clock10x, reset, serdes_strobe,
                                 video_interface_tx, aux_interface_tx, hdmi_interface_tx)
-    hdmi_rx_model = HDMIRxModel(video_interface_rx, aux_interface_rx, hdmi_interface_rx)
+    hdmi_rx_inst = hdmi_decoder(reset, hdmi_interface_rx, video_interface_rx, aux_interface_rx)
 
     clk = clock_driver(clock, 10)
+    clk_2x = clock_driver(clock2x, 5)
     clk_10x = clock_driver(clock10x, 1)
 
     video_source = itertools.product(['0', '1'], repeat=8)
     aux_source = itertools.product(['0', '1'], repeat=4)
-    hdmi_tx_inst = hdmi_tx_model.process()
-    hdmi_tx_inst.name = 'tx_process'
-    hdmi_rx_inst = hdmi_rx_model.process()
-    hdmi_rx_inst.name = 'rx_process'
 
     # List which acts as a queue to store the input signals for 16 clock cycles
     input_signals = []
@@ -62,13 +59,24 @@ def test_hdmi_model():
                 aux_interface_rx.get_ade()]
 
     @instance
+    def assign_strobe():
+
+        yield clock10x.posedge
+        while True:
+            for _ in range(4):
+                yield clock10x.posedge
+            serdes_strobe.next = 1
+            yield clock10x.posedge
+            serdes_strobe.next = 0
+
+    @instance
     def assert_io():
 
         """
         Asserts whether the current output value and the input value before 16 clock cycles are equal
         """
 
-        for _ in range(16):
+        for _ in range(19):
             yield clock.posedge
         while True:
             yield delay(1)
@@ -111,5 +119,5 @@ def test_hdmi_model():
 
     return instances()
 
-t = test_hdmi_model()
+t = test_hdmi_core()
 t.run_sim()

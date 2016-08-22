@@ -17,8 +17,10 @@ class VideoInterface(object):
              color_depth (optional): The bus width of each channel of the video
                                             Default value: (8, 8, 8)
 
-         Usage:
-            video_interface = VideoInterface()
+         Example:
+             .. code-block:: python
+
+                video_interface = VideoInterface()
 
         """
 
@@ -28,8 +30,8 @@ class VideoInterface(object):
         self.color_depth = color_depth
         self.pixel = [0, 0, 0]
 
-        self.hpixel = 0 # column number of the current pixel
-        self.vpixel = 0 # row number of the current pixel
+        self.hpixel = 0     # column number of the current pixel
+        self.vpixel = 0     # row number of the current pixel
 
         # RGB data from video source
         self.red = Signal(intbv(0)[color_depth[0]:])
@@ -52,9 +54,11 @@ class VideoInterface(object):
          Args:
             pixel: The pixel value is a tuple (R, G, B)
 
-         Usage:
-            # Values passed should be non negative integers less than 2**color_depth[i]
-            video_interface.write_pixel(3, 4, 5)
+         Example:
+            .. code-block:: python
+
+                # Values passed should be non negative integers less than 2**color_depth[i]
+                video_interface.write_pixel(3, 4, 5)
 
         """
 
@@ -90,7 +94,7 @@ class VideoInterface(object):
         """
 
         Returns:
-            pixel values R, G, B
+            list: pixel values R, G, B
 
         """
 
@@ -133,7 +137,7 @@ class VideoInterface(object):
         """
 
         Returns:
-            the VDE signal value
+            int: the VDE signal value
 
         """
 

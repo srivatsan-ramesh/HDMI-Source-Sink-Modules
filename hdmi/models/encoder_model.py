@@ -1,38 +1,41 @@
 import math
 
-from myhdl import always, Signal, intbv, ConcatSignal, always_seq, instances, block, modbv
+from myhdl import always, Signal, intbv, concat, always_seq, instances, block, modbv
 
 from hdmi.models.constants import CONTROL_TOKEN
 
 
 class EncoderModel(object):
 
-    def __init__(self, clock, reset, video_in, audio_in, c0, c1, vde, ade,
-                 data_out, channel='BLUE'):
+    """
 
-        """
+    A non convertible model to simulate the behaviour of
+    a TMDS and TERC4 encoder.
 
-         A non convertible model to simulate the behaviour of
-         a TMDS and TERC4 encoder.
+    Args:
+        clock: pixel clock as input
+        reset: asynchronous reset input (active high)
+        video_in: video input of a single channel
+        audio_in: audio input
+        c0: used to determine preamble
+        c1: used to determine preamble
+        vde: video data enable
+        ade: audio data enable
+        data_out: 10 bit parallel output
+        channel: Indicates 'RED', 'GREEN' or 'BLUE' channel
 
-        Args:
-            clock: pixel clock as input
-            reset: asynchronous reset input (active high)
-            video_in: video input of a single channel
-            audio_in: audio input
-            c0: used to determine preamble
-            c1: used to determine preamble
-            vde: video data enable
-            ade: audio data enable
-            data_out: 10 bit parallel output
-            channel: Indicates 'RED', 'GREEN' or 'BLUE' channel
+    Example:
+        .. code-block:: python
 
-        Usage:
             encoder_model = EncoderModel(*params)
             process_inst = encoder_model.process()
             process_inst.run_sim()
 
-        """
+    """
+
+    def __init__(self, clock, reset, video_in, audio_in, c0, c1, vde, ade,
+                 data_out, channel='BLUE'):
+
         self.channel = channel
         self.clock = clock
         self.reset = reset
@@ -52,9 +55,11 @@ class EncoderModel(object):
 
         It simulates the encoding process of the TMDS encoder.
 
-        Usage:
-            process_inst = encoder_model.process()
-            process_inst.run_sim()
+        Example:
+            .. code-block:: python
+
+                process_inst = encoder_model.process()
+                process_inst.run_sim()
 
         """
 
@@ -68,7 +73,7 @@ class EncoderModel(object):
             'RED': int('0100110011', 2)
         }.get(self.channel, 0)
 
-        no_of_ones_video_in = Signal(intbv(0)[math.log(self.color_depth, 2):])
+        no_of_ones_video_in = Signal(intbv(0)[math.log(self.color_depth, 2) + 1:])
 
         decision1 = Signal(bool(0))
         decision2 = Signal(bool(0))
@@ -156,9 +161,9 @@ class EncoderModel(object):
 
                 ade_vld.next = self.ade | __ade | ____ade
                 if digb_period:
-                    audio_in_vld.next = ConcatSignal(bool(1), bool(1), __c1, __c0)
+                    audio_in_vld.next = concat(bool(1), bool(1), __c1, __c0)
                 else:
-                    audio_in_vld.next = ConcatSignal(__audio_in[3], __audio_in[2], __c1, __c0)
+                    audio_in_vld.next = concat(__audio_in[3], __audio_in[2], __c1, __c0)
 
             else:
 
@@ -188,12 +193,12 @@ class EncoderModel(object):
                     self.data_out.next[9] = True
                     self.data_out.next[8] = _q_m[8]
                     self.data_out.next[8:0] = ~_q_m[8:0]
-                    count.next = count - ConcatSignal(_q_m[8], bool(0)) + no_of_zeros_q_m - no_of_ones_q_m
+                    count.next = count - concat(_q_m[8], bool(0)) + no_of_zeros_q_m - no_of_ones_q_m
                 else:
                     self.data_out.next[9] = False
                     self.data_out.next[8] = _q_m[8]
                     self.data_out.next[8:0] = _q_m[8:0]
-                    count.next = count - ConcatSignal(not _q_m[8], bool(0)) + no_of_ones_q_m - no_of_zeros_q_m
+                    count.next = count - concat(not _q_m[8], bool(0)) + no_of_ones_q_m - no_of_zeros_q_m
             else:
                 if self.vde:
                     self.data_out.next = video_guard_band
@@ -218,7 +223,7 @@ class EncoderModel(object):
                 elif (self.ade | ____ade) and (self.channel != "BLUE"):
                     self.data_out.next = data_island_guard_band
                 else:
-                    concat_c = ConcatSignal(__c1, __c0)
+                    concat_c = concat(__c1, __c0)
                     self.data_out.next = CONTROL_TOKEN[concat_c]
 
                 count.next = 0

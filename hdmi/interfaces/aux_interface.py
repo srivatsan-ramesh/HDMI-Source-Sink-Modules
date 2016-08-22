@@ -7,16 +7,18 @@ class AuxInterface(object):
 
         """
 
-         This interface is the internal interface modeled after
-         the xapp495 internal audio interface
+        This interface is the internal interface modeled after
+        the xapp495 internal audio interface
 
-         Args:
+        Args:
              clock: pixel clock.
              aux_depth (optional): The bus width of the aux interface
                                           Default value: (4, 4, 4)
 
-        Usage:
-            aux_interface = AuxInterface()
+        Example:
+            .. code-block:: python
+
+                aux_interface = AuxInterface()
 
         """
 
@@ -42,9 +44,11 @@ class AuxInterface(object):
              aux1: The auxiliary data(usually audio data)
              aux2: The auxiliary data(usually audio data)
 
-         Usage:
-            # Values passed should be non negative integers less than 2**aux_depth[i]
-            yield aux_interface.write_aux(2, 2, 2)
+         Example:
+            .. code-block:: python
+
+                # Values passed should be non negative integers less than 2**aux_depth[i]
+                yield aux_interface.write_aux(2, 2, 2)
 
         """
 
@@ -66,7 +70,7 @@ class AuxInterface(object):
         """
 
         Returns:
-            A tuple of aux signal values
+            list: A list of aux signal values
 
         """
 
@@ -99,7 +103,7 @@ class AuxInterface(object):
         """
 
         Returns:
-            ADE signal value
+            int: ADE signal value
 
         """
 

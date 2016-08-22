@@ -1,9 +1,10 @@
-from myhdl import Signal, instance, Simulation
+from myhdl import Signal, instance, instances, block
 
 from hdmi.interfaces import AuxInterface
 from hdmi.utils import clock_driver
 
 
+@block
 def test_aux_interface():
 
     aux_depth = (4, 4, 4)
@@ -30,10 +31,8 @@ def test_aux_interface():
 
         yield aux_interface.disable_aux()
 
-    return clock_drive, test
+    return instances()
 
 test_instance = test_aux_interface()
-
-sim = Simulation(test_instance)
-sim.run(8)
-sim.quit()
+test_instance.run_sim(8)
+test_instance.quit_sim()

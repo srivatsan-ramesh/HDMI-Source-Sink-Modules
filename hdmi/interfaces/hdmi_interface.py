@@ -3,7 +3,7 @@ from myhdl import Signal
 
 class HDMIInterface(object):
 
-    def __init__(self, clock5x, clock5x_not):
+    def __init__(self, clock10x):
 
         """
 
@@ -11,16 +11,16 @@ class HDMIInterface(object):
          the xapp495 external HDMI interface
 
          Args:
-            clock5x: A reference clock 5 times the pixel clock
-            clock5x_not: A reference clock 5 times the pixel clock
+            clock10x: A reference clock 10 times the pixel clock
 
-         Usage:
-            hdmi_interface = HDMIInterface()
+         Example:
+            .. code-block:: python
+
+                hdmi_interface = HDMIInterface(clock10x)
 
         """
 
-        self.clock5x = clock5x
-        self.clock5x_not = clock5x_not
+        self.clock10x = clock10x
 
         # Differential TMDS output/input signals
         self.TMDS_R_P = Signal(bool(0))
@@ -47,9 +47,11 @@ class HDMIInterface(object):
              TMDS_B: Serialized TMDS encoded video data
              TMDS_CLK: Clock used by the sink to recover data
 
-         Usage:
-            # The values passed should be 1(or True) or 0(or False).
-            yield hdmi_interface.write_data(0, 0, 0, 0)
+         Example:
+            .. code-block:: python
+
+                # The values passed should be 1(or True) or 0(or False).
+                yield hdmi_interface.write_data(0, 0, 0, 0)
 
         """
 
@@ -61,7 +63,7 @@ class HDMIInterface(object):
         self.TMDS_G_N.next = False if TMDS_G == 1 else True
         self.TMDS_B_N.next = False if TMDS_B == 1 else True
         self.TMDS_CLK_N.next = False if TMDS_CLK == 1 else True
-        yield self.clock5x.posedge, self.clock5x_not.posedge
+        yield self.clock10x.posedge
 
         # can be uncommented to see output
         # print('Write :')
@@ -69,7 +71,7 @@ class HDMIInterface(object):
 
     def read_data(self):
 
-        yield self.clock5x.posedge, self.clock5x_not.posedge
+        yield self.clock10x.posedge
 
         # can be uncommented to see output
         # print('Read :')

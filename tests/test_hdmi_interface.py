@@ -1,19 +1,18 @@
 import itertools
-from myhdl import Signal, instance, Simulation
+from myhdl import Signal, instance, block, instances
 
 from hdmi.interfaces import HDMIInterface
 from hdmi.utils import clock_driver
 
 
+@block
 def test_hdmi_interface():
 
-    clock5x = Signal(bool(0))
-    clock5x_not = Signal(bool(0))
+    clock10x = Signal(bool(0))
 
-    clk_drive = clock_driver(clock5x)
-    clk_drive_not = clock_driver(clock5x_not)
+    clk_drive = clock_driver(clock10x)
 
-    hdmi_interface = HDMIInterface(clock5x, clock5x_not)
+    hdmi_interface = HDMIInterface(clock10x)
 
     @instance
     def test():
@@ -25,10 +24,8 @@ def test_hdmi_interface():
                   hdmi_interface.read_data()
             assert hdmi_interface.get_TMDS_data() == TMDS_data
 
-    return clk_drive, clk_drive_not, test
+    return instances()
 
 test_instance = test_hdmi_interface()
-
-sim = Simulation(test_instance)
-sim.run(16)
-sim.quit()
+test_instance.run_sim(16)
+test_instance.quit_sim()

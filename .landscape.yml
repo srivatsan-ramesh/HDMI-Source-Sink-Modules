@@ -1,2 +1,9 @@
 ignore-patterns:
     - (^|/)__init__\.py$
+pylint:
+  disable:
+    - unused-variable
+    - unused-argument
+pyflakes:
+  disable:
+    - F841

@@ -1,29 +1,30 @@
-from myhdl import Signal, always_comb, intbv, always, ConcatSignal, instance, block
+from myhdl import Signal, always_comb, intbv, always, ConcatSignal, instance, block, instances
 
 from hdmi.models import DecoderModel
 
 
 class HDMIRxModel(object):
+    """
 
-    def __init__(self, video_interface, aux_interface, hdmi_interface):
+    A non-convertible HDMI Transmitter Model which encodes the input
+    video and AUX data and transmits it. This is modelled after the xapp495
+    HDMI Tx module.
 
-        """
+    Args:
+        video_interface: An instance of the VideoInterface class
+        aux_interface: An instance of the AUXInterface class
+        hdmi_interface: An instance of the HDMIInterface class
 
-        A non-convertible HDMI Transmitter Model which encodes the input
-        video and AUX data and transmits it. This is modelled after the xapp495
-        HDMI Tx module.
+    Example:
+        .. code-block:: python
 
-        Args:
-            video_interface: An instance of the VideoInterface class
-            aux_interface: An instance of the AUXInterface class
-            hdmi_interface: An instance of the HDMIInterface class
-
-        Usage:
             hdmi_rx_model = HDMIRxModel(*params)
             process_inst = hdmi_rx_model.process()
             process_inst.run_sim()
 
-        """
+    """
+
+    def __init__(self, video_interface, aux_interface, hdmi_interface):
 
         self.video_interface = video_interface
         self.aux_interface = aux_interface
@@ -36,9 +37,11 @@ class HDMIRxModel(object):
 
         It simulates the process of the receiving data by the HDMI receiver.
 
-        Usage:
-            process_inst = hdmi_rx_model.process()
-            process_inst.run_sim()
+        Example:
+            .. code-block:: python
+
+                process_inst = hdmi_rx_model.process()
+                process_inst.run_sim()
 
         """
 
@@ -110,5 +113,4 @@ class HDMIRxModel(object):
                       green_decoder.write_data(int(''.join(green_list[::-1]), 2)), \
                       blue_decoder.write_data(int(''.join(blue_list[::-1]), 2))
 
-        return continuous_assignment, sequential, assign, deserialize, \
-            red_decoder_inst, green_decoder_inst, blue_decoder_inst
+        return instances()
